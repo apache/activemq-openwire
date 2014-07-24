@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.activemq</groupId>
+    <artifactId>openwire-protocol</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>openwire-core</artifactId>
+  <name>openwire-core</name>
+  <description>The main OpenWire protocol implementation providing current versions of the codec.</description>
+  <packaging>jar</packaging>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <openwire-src>${basedir}/src/main/java/io/openwire/commands</openwire-src>
+    <openwire-oldest>10</openwire-oldest>
+    <openwire-newest>10</openwire-newest>
+  </properties>
+
+  <dependencies>
+    <!-- =================================== -->
+    <!-- Required Dependencies                -->
+    <!-- =================================== -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.fusesource.hawtbuf</groupId>
+      <artifactId>hawtbuf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jms_1.1_spec</artifactId>
+    </dependency>
+
+    <!-- =================================== -->
+    <!-- Testing Dependencies                -->
+    <!-- =================================== -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>openwire-generator</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-broker</artifactId>
+      <version>${activemq-version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-kahadb-store</artifactId>
+      <version>${activemq-version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-jaas</artifactId>
+      <version>${activemq-version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-spring</artifactId>
+      <version>${activemq-version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+<!--   <build> -->
+<!--     <plugins> -->
+<!--       <plugin> -->
+<!--         <groupId>org.apache.maven.plugins</groupId> -->
+<!--         <artifactId>maven-antrun-plugin</artifactId> -->
+<!--         <executions> -->
+<!--           <execution> -->
+<!--             <id>default</id> -->
+<!--             <phase>generate-sources</phase> -->
+<!--             <configuration> -->
+<!--               <target> -->
+<!--                 <echo>Running OpenWire Generator</echo> -->
+<!--                 <taskdef name="generate" classname="org.apache.activemq.openwire.generator.GeneratorTask" classpathref="maven.test.classpath" /> -->
+<!--                 <generate fromVersion="${openwire-oldest}" toVersion="${openwire-newest}" sourceDir="${openwire-src}" targetDir="${project.build.directory}/generated-sources/openwire" /> -->
+<!--               </target> -->
+<!--             </configuration> -->
+<!--             <goals> -->
+<!--               <goal>run</goal> -->
+<!--             </goals> -->
+<!--           </execution> -->
+<!--         </executions> -->
+<!--       </plugin> -->
+<!--       <plugin> -->
+<!--         <groupId>org.codehaus.mojo</groupId> -->
+<!--         <artifactId>build-helper-maven-plugin</artifactId> -->
+<!--         <version>1.7</version> -->
+<!--         <executions> -->
+<!--           <execution> -->
+<!--             <id>default</id> -->
+<!--             <phase>generate-sources</phase> -->
+<!--             <goals> -->
+<!--               <goal>add-source</goal> -->
+<!--             </goals> -->
+<!--             <configuration> -->
+<!--               <sources> -->
+<!--                 <source>${project.build.directory}/generated-sources/openwire</source> -->
+<!--               </sources> -->
+<!--             </configuration> -->
+<!--           </execution> -->
+<!--         </executions> -->
+<!--       </plugin> -->
+<!--     </plugins> -->
+<!--   </build> -->
+
+<!--   <profiles> -->
+<!--     <profile> -->
+<!--       <id>lib/tools.jar</id> -->
+<!--       <activation> -->
+<!--         <file> -->
+<!--           <exists>${java.home}/lib/tools.jar</exists> -->
+<!--         </file> -->
+<!--       </activation> -->
+<!--       <build> -->
+<!--         <plugins> -->
+<!--           <plugin> -->
+<!--             <groupId>org.apache.maven.plugins</groupId> -->
+<!--             <artifactId>maven-antrun-plugin</artifactId> -->
+<!--             <dependencies> -->
+<!--               <dependency> -->
+<!--                 <groupId>com.sun</groupId> -->
+<!--                 <artifactId>tools</artifactId> -->
+<!--                 <version>1.6.5</version> -->
+<!--                 <scope>system</scope> -->
+<!--                 <optional>true</optional> -->
+<!--                 <systemPath>${java.home}/lib/tools.jar</systemPath> -->
+<!--               </dependency> -->
+<!--             </dependencies> -->
+<!--           </plugin> -->
+<!--         </plugins> -->
+<!--       </build> -->
+<!--     </profile> -->
+<!--     <profile> -->
+<!--       <id>../lib/tools.jar</id> -->
+<!--       <activation> -->
+<!--         <file> -->
+<!--           <exists>${java.home}/../lib/tools.jar</exists> -->
+<!--         </file> -->
+<!--       </activation> -->
+<!--       <build> -->
+<!--         <plugins> -->
+<!--           <plugin> -->
+<!--             <groupId>org.apache.maven.plugins</groupId> -->
+<!--             <artifactId>maven-antrun-plugin</artifactId> -->
+<!--             <dependencies> -->
+<!--               <dependency> -->
+<!--                 <groupId>com.sun</groupId> -->
+<!--                 <artifactId>tools</artifactId> -->
+<!--                 <version>1.6.5</version> -->
+<!--                 <scope>system</scope> -->
+<!--                 <optional>true</optional> -->
+<!--                 <systemPath>${java.home}/../lib/tools.jar</systemPath> -->
+<!--               </dependency> -->
+<!--             </dependencies> -->
+<!--           </plugin> -->
+<!--         </plugins> -->
+<!--       </build> -->
+<!--     </profile> -->
+<!--   </profiles> -->
+
+</project>
