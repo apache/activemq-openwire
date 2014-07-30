@@ -14,13 +14,12 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>12</version>
+    <version>14</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -50,7 +49,7 @@
     <maven-eclipse-plugin-version>2.9</maven-eclipse-plugin-version>
     <maven-idea-plugin-version>2.5</maven-idea-plugin-version>
     <maven-compiler-plugin-version>3.1</maven-compiler-plugin-version>
-    <maven-antrun-plugin-version>1.6.5</maven-antrun-plugin-version>
+    <maven-antrun-plugin-version>1.7.0</maven-antrun-plugin-version>
     <findbugs-maven-plugin-version>2.5.2</findbugs-maven-plugin-version>
   </properties>
 
@@ -93,6 +92,7 @@
     <module>openwire-legacy</module>
     <module>openwire-interop-tests</module>
     <module>openwire-jms</module>
+    <module>openwire-website</module>
   </modules>
 
   <dependencyManagement>
