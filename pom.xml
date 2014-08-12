@@ -30,6 +30,9 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
+    <!-- base url for site deployment.  See distribution management for full url.  Override this in settings.xml for staging -->
+    <website-base-url>svn:https://svn.apache.org/repos/infra/websites/production/activemq/content/openwire</website-base-url>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <source-version>1.7</source-version>
     <target-version>1.7</target-version>
@@ -85,6 +88,14 @@
       <post>dev@activemq.apache.org</post>
     </mailingList>
   </mailingLists>
+
+  <distributionManagement>
+    <site>
+      <!-- this needs to match a server in your settings.xml with upload settings -->
+      <id>openwire-website</id>
+      <url>${website-base-url}/versions/${project.version}/maven/</url>
+    </site>
+  </distributionManagement>
 
   <modules>
     <module>openwire-generator</module>

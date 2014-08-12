@@ -1,0 +1,45 @@
+---
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+title: Module Organization
+--- name:overview
+
+${project_slogan}
+
+--- name:content pipeline:markdown
+
+# Module Organization
+
+ActiveMQ OpenWire is composed of many loosely coupled jar files.  This helps
+maintain a clear separations of concerns between the modules and allows
+end users to end up with smaller footprint configurations if they don't
+need all the optional features of the project.
+
+## OpenWire Core
+
+The core library contains the OpenWire Command objects and a set marshalers that
+implement the initial 1.0 OpenWire protocol as well as the two most recent version
+marshalers for the protocol.  This allows for a small library to be used when you
+only need to talk to the most up to date Broker instances.
+
+## OpenWire Legacy
+
+The module provides all remaining protocol marshalers for versions of OpenWire that
+are no longer in common use.  If you need to communicate with an older broker instance
+then you might need to include this library in order to communicate properly.
+
+
+
