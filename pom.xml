@@ -95,6 +95,12 @@
       <id>openwire-website</id>
       <url>${website-base-url}/versions/${project.version}/maven/</url>
     </site>
+    <snapshotRepository>
+      <id>apache.snapshots.https</id>
+      <name>Apache Development Snapshot Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <uniqueVersion>false</uniqueVersion>
+    </snapshotRepository>
   </distributionManagement>
 
   <modules>
