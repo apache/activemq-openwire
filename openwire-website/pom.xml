@@ -37,10 +37,10 @@
     <!-- lets use the latest greatest! :) -->
     <hawtio-release-version>${project.version}</hawtio-release-version>
 
-    <scala-version>2.10.0</scala-version>
-    <scala-plugin-version>3.1.0</scala-plugin-version>
-    <scalate-version>1.6.1</scalate-version>
-    <scalamd-version>1.6</scalamd-version>
+    <scala-version>2.10.4</scala-version>
+    <scala-plugin-version>3.2.2</scala-plugin-version>
+    <scalate-version>1.7.1</scalate-version>
+    <scalamd-version>1.6.1</scalamd-version>
     <jetty-plugin-version>7.0.1.v20091125</jetty-plugin-version>
 
     <netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
@@ -48,17 +48,17 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.fusesource.scalate</groupId>
+      <groupId>org.scalatra.scalate</groupId>
       <artifactId>scalate-wikitext_2.10</artifactId>
       <version>${scalate-version}</version>
     </dependency>
     <dependency>
-      <groupId>org.fusesource.scalate</groupId>
+      <groupId>org.scalatra.scalate</groupId>
       <artifactId>scalate-page_2.10</artifactId>
       <version>${scalate-version}</version>
     </dependency>
     <dependency>
-      <groupId>org.fusesource.scalamd</groupId>
+      <groupId>org.scalatra.scalate</groupId>
       <artifactId>scalamd_2.10</artifactId>
       <version>${scalamd-version}</version>
     </dependency>
@@ -69,7 +69,7 @@
 
     <!-- testing -->
     <dependency>
-      <groupId>org.fusesource.scalate</groupId>
+      <groupId>org.scalatra.scalate</groupId>
       <artifactId>scalate-test_2.10</artifactId>
       <version>${scalate-version}</version>
       <scope>test</scope>
@@ -111,7 +111,7 @@
             <jvmArg>-Xss8m</jvmArg>
           </jvmArgs>
           <scalaVersion>${scala-version}</scalaVersion>
-          <target>jvm-1.6</target>
+          <target>jvm-1.7</target>
         </configuration>
       </plugin>
 
@@ -132,7 +132,7 @@
       </plugin>
 
       <plugin>
-        <groupId>org.fusesource.scalate</groupId>
+        <groupId>org.scalatra.scalate</groupId>
         <artifactId>maven-scalate-plugin_2.10</artifactId>
         <version>${scalate-version}</version>
 
@@ -301,8 +301,8 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.fusesource.scalate</groupId>
-            <artifactId>maven-scalate-plugin_2.10</artifactId>
+            <groupId>org.scalatra.scalate</groupId>
+            <artifactId>maven-scalate-plugin_2.11</artifactId>
             <version>${scalate-version}</version>
 
             <executions>
