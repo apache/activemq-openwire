@@ -30,6 +30,7 @@ public class SubscriptionInfo implements DataStructure {
     protected String clientId;
     protected String subscriptionName;
     protected String selector;
+    protected boolean noLocal;
 
     public SubscriptionInfo() {
     }
@@ -150,5 +151,16 @@ public class SubscriptionInfo implements DataStructure {
 
     public void setSubscribedDestination(OpenWireDestination subscribedDestination) {
         this.subscribedDestination = subscribedDestination;
+    }
+
+    /**
+     * @openwire:property version=11
+     */
+    public boolean isNoLocal() {
+        return noLocal;
+    }
+
+    public void setNoLocal(boolean noLocal) {
+        this.noLocal = noLocal;
     }
 }
