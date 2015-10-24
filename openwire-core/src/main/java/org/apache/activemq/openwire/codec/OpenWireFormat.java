@@ -35,8 +35,9 @@ import org.fusesource.hawtbuf.DataByteArrayOutputStream;
  */
 public final class OpenWireFormat {
 
-    public static final int DEFAULT_VERSION = CommandTypes.PROTOCOL_STORE_VERSION;
+    public static final int DEFAULT_STORE_VERSION = CommandTypes.PROTOCOL_STORE_VERSION;
     public static final int DEFAULT_WIRE_VERSION = CommandTypes.PROTOCOL_VERSION;
+    public static final int DEFAULT_LEGACY_VERSION = CommandTypes.PROTOCOL_LEGACY_STORE_VERSION;
     public static final long DEFAULT_MAX_FRAME_SIZE = Long.MAX_VALUE;
 
     static final byte NULL_TYPE = CommandTypes.NULL;
@@ -63,7 +64,7 @@ public final class OpenWireFormat {
     private WireFormatInfo preferedWireFormatInfo;
 
     public OpenWireFormat() {
-        this(DEFAULT_VERSION);
+        this(DEFAULT_STORE_VERSION);
     }
 
     public OpenWireFormat(int i) {
