@@ -108,7 +108,6 @@
     <module>openwire-core</module>
     <module>openwire-legacy</module>
     <module>openwire-interop-tests</module>
-    <module>openwire-jms</module>
     <module>openwire-website</module>
   </modules>
 
