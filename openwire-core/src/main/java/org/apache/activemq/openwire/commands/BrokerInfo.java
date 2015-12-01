@@ -16,6 +16,9 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * When a client connects to a broker, the broker send the client a BrokerInfo
  * so that the client knows which broker node he's talking to and also any peers
@@ -24,21 +27,45 @@ package org.apache.activemq.openwire.commands;
  *
  * @openwire:marshaller code="2"
  */
+@OpenWireType(typeCode = 2)
 public class BrokerInfo extends BaseCommand {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.BROKER_INFO;
 
+    @OpenWireProperty(version = 1, sequence = 1, cached = true)
     protected BrokerId brokerId;
+
+    @OpenWireProperty(version = 1, sequence = 2)
     protected String brokerURL;
-    protected boolean slaveBroker;
-    protected boolean masterBroker;
-    protected boolean faultTolerantConfiguration;
-    protected boolean networkConnection;
-    protected boolean duplexConnection;
+
+    @OpenWireProperty(version = 1, sequence = 3)
     protected BrokerInfo peerBrokerInfos[];
+
+    @OpenWireProperty(version = 1, sequence = 4)
     protected String brokerName;
+
+    @OpenWireProperty(version = 1, sequence = 5)
+    protected boolean slaveBroker;
+
+    @OpenWireProperty(version = 1, sequence = 6)
+    protected boolean masterBroker;
+
+    @OpenWireProperty(version = 1, sequence = 7)
+    protected boolean faultTolerantConfiguration;
+
+    @OpenWireProperty(version = 2, sequence = 8)
+    protected boolean duplexConnection;
+
+    @OpenWireProperty(version = 2, sequence = 9)
+    protected boolean networkConnection;
+
+    @OpenWireProperty(version = 2, sequence = 10)
     protected long connectionId;
+
+    @OpenWireProperty(version = 3, sequence = 11)
     protected String brokerUploadUrl;
+
+    @OpenWireProperty(version = 3, sequence = 12)
     protected String networkProperties;
 
     public BrokerInfo copy() {

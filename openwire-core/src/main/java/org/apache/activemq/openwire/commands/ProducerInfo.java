@@ -16,18 +16,31 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 
 /**
  * @openwire:marshaller code="6"
  */
+@OpenWireType(typeCode = 6)
 public class ProducerInfo extends BaseCommand {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.PRODUCER_INFO;
 
+    @OpenWireProperty(version = 1, sequence = 1, cached = true)
     protected ProducerId producerId;
+
+    @OpenWireProperty(version = 1, sequence = 2, cached = true)
     protected OpenWireDestination destination;
+
+    @OpenWireProperty(version = 1, sequence = 3, cached = true)
     protected BrokerId[] brokerPath;
+
+    @OpenWireProperty(version = 2, sequence = 4)
     protected boolean dispatchAsync;
+
+    @OpenWireProperty(version = 3, sequence = 5)
     protected int windowSize;
 
     public ProducerInfo() {

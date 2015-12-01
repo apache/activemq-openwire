@@ -16,20 +16,34 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireExtension;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
 
 /**
  * @openwire:marshaller code="110"
  */
+@OpenWireType(typeCode = 110)
 public class MessageId implements DataStructure, Comparable<MessageId> {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.MESSAGE_ID;
 
+    @OpenWireProperty(version = 10, sequence = 1)
     protected String textView;
+
+    @OpenWireProperty(version = 1, sequence = 2, cached = true)
     protected ProducerId producerId;
+
+    @OpenWireProperty(version = 1, sequence = 3)
     protected long producerSequenceId;
+
+    @OpenWireProperty(version = 1, sequence = 4)
     protected long brokerSequenceId;
 
+    @OpenWireExtension
     private transient String key;
+
+    @OpenWireExtension
     private transient int hashCode;
 
     public MessageId() {

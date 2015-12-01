@@ -16,20 +16,28 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @openwire:marshaller code="91"
  */
+@OpenWireType(typeCode = 91)
 public class NetworkBridgeFilter implements DataStructure {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.NETWORK_BRIDGE_FILTER;
 
     static final Logger LOG = LoggerFactory.getLogger(NetworkBridgeFilter.class);
 
+    @OpenWireProperty(version = 1, sequence = 1, cached = true)
     protected BrokerId networkBrokerId;
+
+    @OpenWireProperty(version = 10, sequence = 2)
     protected int messageTTL;
+
+    @OpenWireProperty(version = 10, sequence = 3)
     protected int consumerTTL;
 
     public NetworkBridgeFilter() {

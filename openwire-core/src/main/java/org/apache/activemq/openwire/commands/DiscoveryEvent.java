@@ -16,16 +16,23 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * Represents a discovery event containing the details of the service
  *
  * @openwire:marshaller code="40"
  */
+@OpenWireType(typeCode = 40)
 public class DiscoveryEvent implements DataStructure {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.DISCOVERY_EVENT;
 
+    @OpenWireProperty(version = 1, sequence = 1)
     protected String serviceName;
+
+    @OpenWireProperty(version = 1, sequence = 2)
     protected String brokerName;
 
     public DiscoveryEvent() {

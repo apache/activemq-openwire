@@ -16,17 +16,24 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * Represents a partial command; a large command that has been split up into
  * pieces.
  *
  * @openwire:marshaller code="60"
  */
+@OpenWireType(typeCode = 60)
 public class PartialCommand implements Command {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.PARTIAL_COMMAND;
 
+    @OpenWireProperty(version = 1, sequence = 1)
     private int commandId;
+
+    @OpenWireProperty(version = 1, sequence = 1, mandatory = true)
     private byte[] data;
 
     public PartialCommand() {

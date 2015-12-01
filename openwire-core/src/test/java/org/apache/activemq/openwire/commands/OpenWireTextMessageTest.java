@@ -28,10 +28,7 @@ import javax.jms.JMSException;
 import javax.jms.MessageNotReadableException;
 import javax.jms.MessageNotWriteableException;
 
-import org.apache.activemq.openwire.commands.CommandTypes;
-import org.apache.activemq.openwire.commands.Message;
-import org.apache.activemq.openwire.commands.OpenWireTextMessage;
-import org.apache.activemq.util.MarshallingSupport;
+import org.apache.activemq.openwire.utils.MarshallingSupport;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.ByteArrayOutputStream;
 import org.junit.Test;

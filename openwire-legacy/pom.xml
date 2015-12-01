@@ -40,10 +40,6 @@
       <artifactId>openwire-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.fusesource.hawtbuf</groupId>
       <artifactId>hawtbuf</artifactId>
     </dependency>

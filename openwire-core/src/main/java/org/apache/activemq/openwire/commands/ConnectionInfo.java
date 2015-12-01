@@ -16,24 +16,49 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * @openwire:marshaller code="3"
  */
+@OpenWireType(typeCode = 3)
 public class ConnectionInfo extends BaseCommand {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.CONNECTION_INFO;
 
+    @OpenWireProperty(version = 1, sequence = 1, cached = true)
     protected ConnectionId connectionId;
+
+    @OpenWireProperty(version = 1, sequence = 2)
     protected String clientId;
-    protected String clientIp;
-    protected String userName;
+
+    @OpenWireProperty(version = 1, sequence = 3)
     protected String password;
+
+    @OpenWireProperty(version = 1, sequence = 4)
+    protected String userName;
+
+    @OpenWireProperty(version = 1, sequence = 5, cached = true)
     protected BrokerId[] brokerPath;
+
+    @OpenWireProperty(version = 1, sequence = 6)
     protected boolean brokerMasterConnector;
+
+    @OpenWireProperty(version = 1, sequence = 7)
     protected boolean manageable;
+
+    @OpenWireProperty(version = 2, sequence = 8)
     protected boolean clientMaster = true;
+
+    @OpenWireProperty(version = 6, sequence = 9)
     protected boolean faultTolerant = false;
+
+    @OpenWireProperty(version = 6, sequence = 10)
     protected boolean failoverReconnect;
+
+    @OpenWireProperty(version = 8, sequence = 11)
+    protected String clientIp;
 
     public ConnectionInfo() {
     }

@@ -16,25 +16,46 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * Used by the Broker to control the connection state, the client should react to
  * this command immediately.
  *
  * @openwire:marshaller code="18"
  */
+@OpenWireType(typeCode = 18)
 public class ConnectionControl extends BaseCommand {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.CONNECTION_CONTROL;
 
-    protected boolean suspend;
-    protected boolean resume;
+    @OpenWireProperty(version = 1, sequence = 1)
     protected boolean close;
+
+    @OpenWireProperty(version = 1, sequence = 2)
     protected boolean exit;
+
+    @OpenWireProperty(version = 1, sequence = 3)
     protected boolean faultTolerant;
-    protected String connectedBrokers="";
+
+    @OpenWireProperty(version = 1, sequence = 4)
+    protected boolean resume;
+
+    @OpenWireProperty(version = 1, sequence = 5)
+    protected boolean suspend;
+
+    @OpenWireProperty(version = 6, sequence = 6)
+    protected String connectedBrokers = "";
+
+    @OpenWireProperty(version = 6, sequence = 7)
     protected String reconnectTo = "";
-    protected byte[] token;
+
+    @OpenWireProperty(version = 6, sequence = 8)
     protected boolean rebalanceConnection;
+
+    @OpenWireProperty(version = 6, sequence = 9)
+    protected byte[] token;
 
     @Override
     public byte getDataStructureType() {

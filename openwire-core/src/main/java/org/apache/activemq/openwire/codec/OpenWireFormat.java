@@ -53,6 +53,8 @@ public final class OpenWireFormat {
     private boolean sizePrefixDisabled;
     private long maxFrameSize = DEFAULT_MAX_FRAME_SIZE;
 
+    private boolean useLegacyCodecs = false;
+
     // The following fields are used for value caching
     private short nextMarshallCacheIndex;
     private short nextMarshallCacheEvictionIndex;
@@ -93,6 +95,7 @@ public final class OpenWireFormat {
         if (object == null) {
             return false;
         }
+
         OpenWireFormat o = (OpenWireFormat) object;
         return o.stackTraceEnabled == stackTraceEnabled && o.cacheEnabled == cacheEnabled && o.version == version
             && o.tightEncodingEnabled == tightEncodingEnabled && o.sizePrefixDisabled == sizePrefixDisabled;
@@ -123,7 +126,6 @@ public final class OpenWireFormat {
                 throw new IOException("Unknown data type: " + type);
             }
             if (tightEncodingEnabled) {
-
                 BooleanStream bs = new BooleanStream();
                 size += dsm.tightMarshal1(this, c, bs);
                 size += bs.marshalledSize();
@@ -136,7 +138,6 @@ public final class OpenWireFormat {
                 bs.marshal(bytesOut);
                 dsm.tightMarshal2(this, c, bytesOut, bs);
                 sequence = bytesOut.toBuffer();
-
             } else {
                 bytesOut.restart();
                 if (!sizePrefixDisabled) {
@@ -181,7 +182,6 @@ public final class OpenWireFormat {
     }
 
     public synchronized void marshal(Object o, DataOutput dataOut) throws IOException {
-
         if (cacheEnabled) {
             runMarshallCacheEvictionSweep();
         }
@@ -195,6 +195,7 @@ public final class OpenWireFormat {
             if (dsm == null) {
                 throw new IOException("Unknown data type: " + type);
             }
+
             if (tightEncodingEnabled) {
                 BooleanStream bs = new BooleanStream();
                 size += dsm.tightMarshal1(this, c, bs);
@@ -207,7 +208,6 @@ public final class OpenWireFormat {
                 dataOut.writeByte(type);
                 bs.marshal(dataOut);
                 dsm.tightMarshal2(this, c, dataOut, bs);
-
             } else {
                 DataOutput looseOut = dataOut;
 
@@ -224,9 +224,7 @@ public final class OpenWireFormat {
                     dataOut.writeInt(sequence.getLength());
                     dataOut.write(sequence.getData(), sequence.getOffset(), sequence.getLength());
                 }
-
             }
-
         } else {
             if (!sizePrefixDisabled) {
                 dataOut.writeInt(size);
@@ -243,6 +241,7 @@ public final class OpenWireFormat {
                 throw new IOException("Frame size of " + (size / (1024 * 1024)) + " MB larger than max allowed " + (maxFrameSize / (1024 * 1024)) + " MB");
             }
         }
+
         return doUnmarshal(dataIn);
     }
 
@@ -262,6 +261,7 @@ public final class OpenWireFormat {
             size += dsm.tightMarshal1(this, c, bs);
             size += bs.marshalledSize();
         }
+
         return size;
     }
 
@@ -284,29 +284,6 @@ public final class OpenWireFormat {
             bs.marshal(ds);
             dsm.tightMarshal2(this, c, ds, bs);
         }
-    }
-
-    /**
-     * Allows you to dynamically switch the version of the openwire protocol being used.
-     *
-     * @param version
-     */
-    public void setVersion(int version) {
-        String mfName = "org.apache.activemq.openwire.codec.v" + version + ".MarshallerFactory";
-        Class<?> mfClass;
-        try {
-            mfClass = Class.forName(mfName, false, getClass().getClassLoader());
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Invalid version: " + version + ", could not load " + mfName, e);
-        }
-        try {
-            Method method = mfClass.getMethod("createMarshallerMap", new Class[] { OpenWireFormat.class });
-            dataMarshallers = (DataStreamMarshaller[]) method.invoke(null, new Object[] { this });
-        } catch (Throwable e) {
-            throw new IllegalArgumentException("Invalid version: " + version + ", " + mfName
-                + " does not properly implement the createMarshallerMap method.", e);
-        }
-        this.version = version;
     }
 
     public Object doUnmarshal(DataInput dis) throws IOException {
@@ -400,7 +377,6 @@ public final class OpenWireFormat {
 
     public DataStructure looseUnmarshalNestedObject(DataInput dis) throws IOException {
         if (dis.readBoolean()) {
-
             byte dataType = dis.readByte();
             DataStreamMarshaller dsm = dataMarshallers[dataType & 0xFF];
             if (dsm == null) {
@@ -409,7 +385,6 @@ public final class OpenWireFormat {
             DataStructure data = dsm.createObject();
             dsm.looseUnmarshal(this, data, dis);
             return data;
-
         } else {
             return null;
         }
@@ -534,6 +509,55 @@ public final class OpenWireFormat {
 
     public void setMaxFrameSize(long maxFrameSize) {
         this.maxFrameSize = maxFrameSize;
+    }
+
+    /**
+     * @return the useLegacyCodecs current value.
+     */
+    public boolean isUseLegacyCodecs() {
+        return useLegacyCodecs;
+    }
+
+    /**
+     * Sets whether the WireFormat should use the legacy codecs or the universal codec.
+     *
+     * @param useLegacyCodecs
+     *      the useLegacyCodecs setting to use.
+     */
+    public void setUseLegacyCodecs(boolean useLegacyCodecs) {
+        this.useLegacyCodecs = useLegacyCodecs;
+    }
+
+    /**
+     * Allows you to dynamically switch the version of the openwire protocol being used.
+     *
+     * @param version
+     */
+    public void setVersion(int version) {
+        String mfName = null;
+        Class<?> mfClass;
+
+        if (!useLegacyCodecs) {
+            mfName = "org.apache.activemq.openwire.codec.universal.MarshallerFactory";
+        } else {
+            mfName = "org.apache.activemq.openwire.codec.v" + version + ".MarshallerFactory";
+        }
+
+        try {
+            mfClass = Class.forName(mfName, false, getClass().getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("Invalid version: " + version + ", could not load " + mfName, e);
+        }
+
+        try {
+            Method method = mfClass.getMethod("createMarshallerMap", new Class[] { OpenWireFormat.class });
+            dataMarshallers = (DataStreamMarshaller[]) method.invoke(null, new Object[] { this });
+        } catch (Throwable e) {
+            throw new IllegalArgumentException("Invalid version: " + version + ", " + mfName
+                + " does not properly implement the createMarshallerMap method.", e);
+        }
+
+        this.version = version;
     }
 
     public void renegotiateWireFormat(WireFormatInfo info) throws IOException {

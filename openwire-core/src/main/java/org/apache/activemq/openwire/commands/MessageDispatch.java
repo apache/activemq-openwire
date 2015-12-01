@@ -16,16 +16,27 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * @openwire:marshaller code="21"
  */
+@OpenWireType(typeCode = 21)
 public class MessageDispatch extends BaseCommand {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.MESSAGE_DISPATCH;
 
+    @OpenWireProperty(version = 1, sequence = 1, cached = true)
     protected ConsumerId consumerId;
+
+    @OpenWireProperty(version = 1, sequence = 2, cached = true)
     protected OpenWireDestination destination;
+
+    @OpenWireProperty(version = 1, sequence = 3)
     protected Message message;
+
+    @OpenWireProperty(version = 1, sequence = 4)
     protected int redeliveryCounter;
 
     @Override

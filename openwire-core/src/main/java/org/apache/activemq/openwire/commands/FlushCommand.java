@@ -16,11 +16,14 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+
 /**
  * An indication to the transport layer that a flush is required.
  *
  * @openwire:marshaller code="15"
  */
+@OpenWireType(typeCode = 15)
 public class FlushCommand extends BaseCommand {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.FLUSH_COMMAND;

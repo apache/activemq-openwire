@@ -16,12 +16,19 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * @openwire:marshaller
  */
+@OpenWireType(typeCode = 0)
 public abstract class BaseCommand implements Command {
 
+    @OpenWireProperty(version = 1, sequence = 1)
     protected int commandId;
+
+    @OpenWireProperty(version = 1, sequence = 2)
     protected boolean responseRequired;
 
     public void copy(BaseCommand copy) {

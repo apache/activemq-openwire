@@ -19,12 +19,15 @@ package org.apache.activemq.openwire.commands;
 import javax.jms.JMSException;
 import javax.jms.TemporaryQueue;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+
 
 /**
  * Represents an ActiveMQ Temporary Queue.
  *
  * @openwire:marshaller code="102"
  */
+@OpenWireType(typeCode = 102)
 public class OpenWireTempQueue extends OpenWireTempDestination implements TemporaryQueue {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.OPENWIRE_TEMP_QUEUE;

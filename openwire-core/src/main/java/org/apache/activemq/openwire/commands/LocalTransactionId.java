@@ -16,18 +16,29 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireExtension;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * @openwire:marshaller code="111"
  *
  */
+@OpenWireType(typeCode = 111)
 public class LocalTransactionId extends TransactionId implements Comparable<LocalTransactionId> {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.OPENWIRE_LOCAL_TRANSACTION_ID;
 
-    protected ConnectionId connectionId;
+    @OpenWireProperty(version = 1, sequence = 1)
     protected long value;
 
+    @OpenWireProperty(version = 1, sequence = 2, cached = true)
+    protected ConnectionId connectionId;
+
+    @OpenWireExtension
     private transient String transactionKey;
+
+    @OpenWireExtension
     private transient int hashCode;
 
     public LocalTransactionId() {

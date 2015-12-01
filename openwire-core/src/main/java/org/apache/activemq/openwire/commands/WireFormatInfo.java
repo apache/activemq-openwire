@@ -24,6 +24,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.activemq.openwire.annotations.OpenWireExtension;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
 import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
 import org.fusesource.hawtbuf.Buffer;
@@ -34,16 +37,23 @@ import org.fusesource.hawtbuf.UTF8Buffer;
 /**
  * @openwire:marshaller code="1"
  */
+@OpenWireType(typeCode = 1, marshalAware = true)
 public class WireFormatInfo implements Command, MarshallAware {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.WIREFORMAT_INFO;
     private static final int MAX_PROPERTY_SIZE = 1024 * 4;
     private static final byte MAGIC[] = new byte[] { 'A', 'c', 't', 'i', 'v', 'e', 'M', 'Q' };
 
+    @OpenWireProperty(version = 1, sequence = 1, size = 8)
     protected byte magic[] = MAGIC;
+
+    @OpenWireProperty(version = 1, sequence = 2)
     protected int version;
+
+    @OpenWireProperty(version = 1, sequence = 3)
     protected Buffer marshalledProperties;
 
+    @OpenWireExtension
     protected transient Map<String, Object> properties;
 
     @Override

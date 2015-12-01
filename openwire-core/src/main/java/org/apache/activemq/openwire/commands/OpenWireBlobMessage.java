@@ -23,23 +23,36 @@ import java.net.URL;
 
 import javax.jms.JMSException;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireExtension;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * An implementation of ActiveMQ's BlobMessage for out of band BLOB transfer
  *
  * openwire:marshaller code="29"
  */
+@OpenWireType(typeCode = 29, version = 3)
 public class OpenWireBlobMessage extends OpenWireMessage {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.OPENWIRE_BLOB_MESSAGE;
 
     public static final String BINARY_MIME_TYPE = "application/octet-stream";
 
+    @OpenWireProperty(version = 3, sequence = 1)
     private String remoteBlobUrl;
+
+    @OpenWireProperty(version = 3, sequence = 2, cached = true)
     private String mimeType;
-    private String name;
+
+    @OpenWireProperty(version = 3, sequence = 3)
     private boolean deletedByBroker;
 
+    @OpenWireExtension
     private transient URL url;
+
+    @OpenWireExtension(serialized = true)
+    private String name;
 
     @Override
     public OpenWireBlobMessage copy() {
@@ -97,8 +110,6 @@ public class OpenWireBlobMessage extends OpenWireMessage {
     /**
      * The name of the attachment which can be useful information if transmitting files over
      * ActiveMQ
-     *
-     * @openwire:property version=3 cache=false
      */
     public void setName(String name) {
         this.name = name;

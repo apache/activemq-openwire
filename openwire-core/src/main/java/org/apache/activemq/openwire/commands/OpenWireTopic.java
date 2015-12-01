@@ -19,9 +19,12 @@ package org.apache.activemq.openwire.commands;
 import javax.jms.JMSException;
 import javax.jms.Topic;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+
 /**
  * @openwire:marshaller code="101"
  */
+@OpenWireType(typeCode = 101)
 public class OpenWireTopic extends OpenWireDestination implements Topic {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.OPENWIRE_TOPIC;

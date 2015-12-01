@@ -16,11 +16,14 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+
 /**
  * Represents the end marker of a stream of {@link PartialCommand} instances.
  *
  * @openwire:marshaller code="61"
  */
+@OpenWireType(typeCode = 61)
 public class LastPartialCommand extends PartialCommand {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.PARTIAL_LAST_COMMAND;

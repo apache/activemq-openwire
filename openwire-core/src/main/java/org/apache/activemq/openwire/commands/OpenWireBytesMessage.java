@@ -24,6 +24,7 @@ import java.util.zip.Inflater;
 import javax.jms.JMSException;
 import javax.jms.MessageNotReadableException;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.BufferEditor;
 import org.fusesource.hawtbuf.ByteArrayOutputStream;
@@ -36,6 +37,7 @@ import org.fusesource.hawtbuf.ByteArrayOutputStream;
  *
  * openwire:marshaller code=24
  */
+@OpenWireType(typeCode = 24)
 public class OpenWireBytesMessage extends OpenWireMessage {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.OPENWIRE_BYTES_MESSAGE;

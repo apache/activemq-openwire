@@ -16,9 +16,12 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+
 /**
  * @openwire:marshaller
  */
+@OpenWireType(typeCode = 0)
 public abstract class TransactionId implements DataStructure {
 
     public abstract boolean isXATransaction();

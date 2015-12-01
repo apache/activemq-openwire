@@ -16,15 +16,20 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * Used by the Broker to send a specific named command to the client.
  *
  * @openwire:marshaller code="14"
  */
+@OpenWireType(typeCode = 14)
 public class ControlCommand extends BaseCommand {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.CONTROL_COMMAND;
 
+    @OpenWireProperty(version = 1, sequence = 1)
     private String command;
 
     @Override

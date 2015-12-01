@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.jms.JMSException;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.utils.ExceptionSupport;
 import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
 import org.fusesource.hawtbuf.Buffer;
@@ -35,6 +36,7 @@ import org.fusesource.hawtbuf.DataByteArrayOutputStream;
 /**
  * openwire:marshaller code="27"
  */
+@OpenWireType(typeCode = 27)
 public class OpenWireStreamMessage extends OpenWireMessage {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.OPENWIRE_STREAM_MESSAGE;

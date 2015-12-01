@@ -16,6 +16,10 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireExtension;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * A general purpose replay command for some kind of producer where ranges of
  * messages are asked to be replayed. This command is typically used over a
@@ -24,15 +28,25 @@ package org.apache.activemq.openwire.commands;
  *
  * @openwire:marshaller code="65"
  */
+@OpenWireType(typeCode = 65)
 public class ReplayCommand extends BaseCommand {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.REPLAY;
 
-    private String producerId;
-    private int firstAckNumber;
-    private int lastAckNumber;
+    @OpenWireProperty(version = 1, sequence = 1)
     private int firstNakNumber;
+
+    @OpenWireProperty(version = 1, sequence = 2)
     private int lastNakNumber;
+
+    @OpenWireExtension(serialized = true)
+    private String producerId;
+
+    @OpenWireExtension(serialized = true)
+    private int firstAckNumber;
+
+    @OpenWireExtension(serialized = true)
+    private int lastAckNumber;
 
     public ReplayCommand() {
     }
@@ -48,8 +62,6 @@ public class ReplayCommand extends BaseCommand {
 
     /**
      * Is used to uniquely identify the producer of the sequence
-     *
-     * @openwire:property version=1 cache=false
      */
     public void setProducerId(String producerId) {
         this.producerId = producerId;
@@ -62,8 +74,6 @@ public class ReplayCommand extends BaseCommand {
     /**
      * Is used to specify the first sequence number being acknowledged as delivered on the transport
      * so that it can be removed from cache
-     *
-     * @openwire:property version=1
      */
     public void setFirstAckNumber(int firstSequenceNumber) {
         this.firstAckNumber = firstSequenceNumber;
@@ -76,8 +86,6 @@ public class ReplayCommand extends BaseCommand {
     /**
      * Is used to specify the last sequence number being acknowledged as delivered on the transport
      * so that it can be removed from cache
-     *
-     * @openwire:property version=1
      */
     public void setLastAckNumber(int lastSequenceNumber) {
         this.lastAckNumber = lastSequenceNumber;

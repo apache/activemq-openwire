@@ -25,6 +25,8 @@ import java.io.OutputStream;
 import javax.jms.JMSException;
 import javax.jms.MessageNotWriteableException;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireExtension;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
 import org.apache.activemq.openwire.utils.ExceptionSupport;
 import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
@@ -35,10 +37,12 @@ import org.fusesource.hawtbuf.ByteArrayOutputStream;
 /**
  * openwire:marshaller code="28"
  */
+@OpenWireType(typeCode = 28)
 public class OpenWireTextMessage extends OpenWireMessage {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.OPENWIRE_TEXT_MESSAGE;
 
+    @OpenWireExtension(serialized = true)
     protected String text;
 
     @Override

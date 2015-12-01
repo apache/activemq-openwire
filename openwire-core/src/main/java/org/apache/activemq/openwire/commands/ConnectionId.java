@@ -16,13 +16,18 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * @openwire:marshaller code="120"
  */
+@OpenWireType(typeCode = 120)
 public class ConnectionId implements DataStructure, Comparable<ConnectionId> {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.CONNECTION_ID;
 
+    @OpenWireProperty(version = 1, sequence = 1)
     protected String value;
 
     public ConnectionId() {

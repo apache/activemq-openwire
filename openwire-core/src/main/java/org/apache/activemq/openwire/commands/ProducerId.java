@@ -16,20 +16,35 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireExtension;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * @openwire:marshaller code="123"
  *
  */
+@OpenWireType(typeCode = 123)
 public class ProducerId implements DataStructure {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.PRODUCER_ID;
 
+    @OpenWireProperty(version = 1, sequence = 1, cached = true)
     protected String connectionId;
-    protected long sessionId;
+
+    @OpenWireProperty(version = 1, sequence = 2)
     protected long value;
 
+    @OpenWireProperty(version = 1, sequence = 3)
+    protected long sessionId;
+
+    @OpenWireExtension
     protected transient int hashCode;
+
+    @OpenWireExtension
     protected transient String key;
+
+    @OpenWireExtension
     protected transient SessionId parentId;
 
     public ProducerId() {

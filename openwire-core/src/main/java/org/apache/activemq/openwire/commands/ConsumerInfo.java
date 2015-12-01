@@ -19,9 +19,14 @@ package org.apache.activemq.openwire.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.activemq.openwire.annotations.OpenWireExtension;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+import org.apache.activemq.openwire.annotations.OpenWireType;
+
 /**
  * @openwire:marshaller code="5"
  */
+@OpenWireType(typeCode = 5)
 public class ConsumerInfo extends BaseCommand {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.CONSUMER_INFO;
@@ -31,28 +36,65 @@ public class ConsumerInfo extends BaseCommand {
     public static final byte NETWORK_CONSUMER_PRIORITY = -5;
     public static final byte LOW_PRIORITY = -10;
 
+    @OpenWireProperty(version = 1, sequence = 1, cached = true)
     protected ConsumerId consumerId;
-    protected OpenWireDestination destination;
-    protected int prefetchSize;
-    protected int maximumPendingMessageLimit;
+
+    @OpenWireProperty(version = 1, sequence = 2)
     protected boolean browser;
+
+    @OpenWireProperty(version = 1, sequence = 3, cached = true)
+    protected OpenWireDestination destination;
+
+    @OpenWireProperty(version = 1, sequence = 4)
+    protected int prefetchSize;
+
+    @OpenWireProperty(version = 1, sequence = 5)
+    protected int maximumPendingMessageLimit;
+
+    @OpenWireProperty(version = 1, sequence = 6)
     protected boolean dispatchAsync;
+
+    @OpenWireProperty(version = 1, sequence = 7)
     protected String selector;
+
+    @OpenWireProperty(version = 10, sequence = 8)
     protected String clientId;
+
+    @OpenWireProperty(version = 1, sequence = 9)
     protected String subscriptionName;
+
+    @OpenWireProperty(version = 1, sequence = 10)
     protected boolean noLocal;
+
+    @OpenWireProperty(version = 1, sequence = 11)
     protected boolean exclusive;
+
+    @OpenWireProperty(version = 1, sequence = 12)
     protected boolean retroactive;
+
+    @OpenWireProperty(version = 1, sequence = 13)
     protected byte priority;
+
+    @OpenWireProperty(version = 1, sequence = 14, cached = true)
     protected BrokerId[] brokerPath;
+
+    @OpenWireProperty(version = 1, sequence = 15)
+    protected Object additionalPredicate;
+
+    @OpenWireProperty(version = 1, sequence = 16, serialized = false)
+    protected boolean networkSubscription;
+
+    @OpenWireProperty(version = 1, sequence = 17)
     protected boolean optimizedAcknowledge;
+
+    @OpenWireProperty(version = 1, sequence = 18)
     protected boolean noRangeAcks;
 
-    // Network connector values should not be serialized.
-    protected transient boolean networkSubscription;
-    protected transient List<ConsumerId> networkConsumerIds;
+    @OpenWireProperty(version = 4, sequence = 19, serialized = false)
+    protected transient ConsumerId[] networkConsumerPath;
 
-    protected Object additionalPredicate;
+    @OpenWireExtension(serialized = false)
+    protected transient List<ConsumerId> networkConsumerIds;
 
     public ConsumerInfo() {
     }
@@ -88,6 +130,12 @@ public class ConsumerInfo extends BaseCommand {
         info.priority = priority;
         info.brokerPath = brokerPath;
         info.networkSubscription = networkSubscription;
+        if (networkConsumerIds != null) {
+            if (info.networkConsumerIds == null) {
+                info.networkConsumerIds = new ArrayList<ConsumerId>();
+            }
+            info.networkConsumerIds.addAll(networkConsumerIds);
+        }
     }
 
     public boolean isDurable() {

@@ -16,15 +16,22 @@
  */
 package org.apache.activemq.openwire.commands;
 
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.annotations.OpenWireProperty;
+
 /**
  * @openwire:marshaller code="16"
  */
+@OpenWireType(typeCode = 16)
 public class ConnectionError extends BaseCommand {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.CONNECTION_ERROR;
 
-    private ConnectionId connectionId;
+    @OpenWireProperty(version = 1, sequence = 1)
     private Throwable exception;
+
+    @OpenWireProperty(version = 1, sequence = 2)
+    private ConnectionId connectionId;
 
     @Override
     public byte getDataStructureType() {
