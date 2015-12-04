@@ -19,33 +19,25 @@ package org.apache.activemq.openwire.commands;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import javax.jms.JMSException;
-import javax.jms.MessageNotWriteableException;
-
-import org.apache.activemq.openwire.commands.OpenWireObjectMessage;
 import org.junit.Test;
 
-/**
- *
- */
 public class OpenWireObjectMessageTest {
 
     @Test
-    public void testBytes() throws JMSException, IOException {
+    public void testBytes() throws Exception, IOException {
         OpenWireObjectMessage msg = new OpenWireObjectMessage();
         String str = "testText";
         msg.setObject(str);
 
-        msg = (OpenWireObjectMessage) msg.copy();
+        msg = msg.copy();
         assertEquals(msg.getObject(), str);
     }
 
     @Test
-    public void testSetObject() throws JMSException {
+    public void testSetObject() throws Exception {
         OpenWireObjectMessage msg = new OpenWireObjectMessage();
         String str = "testText";
         msg.setObject(str);
@@ -53,16 +45,12 @@ public class OpenWireObjectMessageTest {
     }
 
     @Test
-    public void testClearBody() throws JMSException {
+    public void testClearBody() throws Exception {
         OpenWireObjectMessage objectMessage = new OpenWireObjectMessage();
-        try {
-            objectMessage.setObject("String");
-            objectMessage.clearBody();
-            assertNull(objectMessage.getObject());
-            objectMessage.setObject("String");
-            objectMessage.getObject();
-        } catch (MessageNotWriteableException mnwe) {
-            fail("should be writeable");
-        }
+        objectMessage.setObject("String");
+        objectMessage.clearBody();
+        assertNull(objectMessage.getObject());
+        objectMessage.setObject("String");
+        objectMessage.getObject();
     }
 }

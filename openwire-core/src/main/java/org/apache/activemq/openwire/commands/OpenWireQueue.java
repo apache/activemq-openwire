@@ -16,17 +16,10 @@
  */
 package org.apache.activemq.openwire.commands;
 
-import javax.jms.JMSException;
-import javax.jms.Queue;
-
 import org.apache.activemq.openwire.annotations.OpenWireType;
 
-
-/**
- * @openwire:marshaller code="100"
- */
 @OpenWireType(typeCode = 100)
-public class OpenWireQueue extends OpenWireDestination implements Queue {
+public class OpenWireQueue extends OpenWireDestination {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.OPENWIRE_QUEUE;
 
@@ -57,8 +50,7 @@ public class OpenWireQueue extends OpenWireDestination implements Queue {
         return QUEUE_QUALIFIED_PREFIX;
     }
 
-    @Override
-    public String getQueueName() throws JMSException {
+    public String getQueueName() {
         return getPhysicalName();
     }
 }

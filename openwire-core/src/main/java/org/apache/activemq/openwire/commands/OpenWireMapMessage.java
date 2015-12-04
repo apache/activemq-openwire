@@ -29,14 +29,10 @@ import java.util.Map;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
-import javax.jms.JMSException;
-import javax.jms.MessageFormatException;
-import javax.jms.MessageNotWriteableException;
-
-import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
+import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
-import org.apache.activemq.openwire.utils.ExceptionSupport;
+import org.apache.activemq.openwire.utils.IOExceptionSupport;
 import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.ByteArrayInputStream;
@@ -81,7 +77,7 @@ public class OpenWireMapMessage extends OpenWireMessage {
     }
 
     @Override
-    public void clearMarshalledState() throws JMSException {
+    public void clearMarshalledState() throws IOException {
         super.clearMarshalledState();
         map.clear();
     }
@@ -115,10 +111,9 @@ public class OpenWireMapMessage extends OpenWireMessage {
     /**
      * Builds the message body from data
      *
-     * @throws JMSException
      * @throws IOException
      */
-    private void loadContent() throws JMSException {
+    private void loadContent() throws IOException {
         try {
             if (getContent() != null && map.isEmpty()) {
                 Buffer content = getContent();
@@ -130,8 +125,8 @@ public class OpenWireMapMessage extends OpenWireMessage {
                 map = OpenWireMarshallingSupport.unmarshalPrimitiveMap(dataIn);
                 dataIn.close();
             }
-        } catch (IOException e) {
-            throw ExceptionSupport.create(e);
+        } catch (Exception e) {
+            throw IOExceptionSupport.create(e);
         }
     }
 
@@ -154,7 +149,7 @@ public class OpenWireMapMessage extends OpenWireMessage {
      * message.
      */
     @Override
-    public void clearBody() throws JMSException {
+    public void clearBody() throws IOException {
         super.clearBody();
         map.clear();
     }
@@ -180,7 +175,7 @@ public class OpenWireMapMessage extends OpenWireMessage {
      * @throws JMSException if the JMS provider fails to read the message due to
      *                 some internal error.
      */
-    public Object getObject(String name) throws JMSException {
+    public Object getObject(String name) throws IOException {
         initializeReading();
         Object result = getContentMap().get(name);
         if (result instanceof UTF8Buffer) {
@@ -207,7 +202,7 @@ public class OpenWireMapMessage extends OpenWireMessage {
      *                                  empty string.
      * @throws MessageFormatException if the object is invalid.
      */
-    public void setObject(String name, Object value) throws JMSException {
+    public void setObject(String name, Object value) throws IOException {
         initializeWriting();
         if (value != null) {
             // byte[] not allowed on properties
@@ -231,7 +226,7 @@ public class OpenWireMapMessage extends OpenWireMessage {
      * @throws IllegalArgumentException if the name is null or if the name is an
      *                                  empty string.
      */
-    public void removeObject(String name) throws JMSException {
+    public void removeObject(String name) throws IOException {
         initializeWriting();
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("map element name cannot be null or empty.");
@@ -247,7 +242,7 @@ public class OpenWireMapMessage extends OpenWireMessage {
      * @return an enumeration of all the names in this <CODE>MapMessage</CODE>
      * @throws JMSException
      */
-    public Enumeration<String> getMapNames() throws JMSException {
+    public Enumeration<String> getMapNames() throws IOException {
         return Collections.enumeration(getContentMap().keySet());
     }
 
@@ -260,15 +255,15 @@ public class OpenWireMapMessage extends OpenWireMessage {
      * @throws JMSException if the JMS provider fails to determine if the item
      *                 exists due to some internal error.
      */
-    public boolean itemExists(String name) throws JMSException {
+    public boolean itemExists(String name) throws IOException {
         return getContentMap().containsKey(name);
     }
 
-    private void initializeReading() throws JMSException {
+    private void initializeReading() throws IOException {
         loadContent();
     }
 
-    private void initializeWriting() throws MessageNotWriteableException {
+    private void initializeWriting() throws IOException {
         setContent(null);
     }
 
@@ -283,12 +278,12 @@ public class OpenWireMapMessage extends OpenWireMessage {
         return super.toString() + " OpenWireMapMessage{ " + "theTable = " + map + " }";
     }
 
-    protected Map<String, Object> getContentMap() throws JMSException {
+    protected Map<String, Object> getContentMap() throws IOException {
         initializeReading();
         return map;
     }
 
-    protected void put(String name, Object value) throws JMSException {
+    protected void put(String name, Object value) throws IOException {
         if (name == null) {
             throw new IllegalArgumentException("The name of the property cannot be null.");
         }

@@ -24,18 +24,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.jms.JMSException;
-
 import org.apache.activemq.openwire.annotations.OpenWireType;
-import org.apache.activemq.openwire.utils.ExceptionSupport;
+import org.apache.activemq.openwire.utils.IOExceptionSupport;
 import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.DataByteArrayInputStream;
 import org.fusesource.hawtbuf.DataByteArrayOutputStream;
 
-/**
- * openwire:marshaller code="27"
- */
 @OpenWireType(typeCode = 27)
 public class OpenWireStreamMessage extends OpenWireMessage {
 
@@ -54,7 +49,7 @@ public class OpenWireStreamMessage extends OpenWireMessage {
     }
 
     @Override
-    public void onSend() throws JMSException {
+    public void onSend() throws IOException {
         super.onSend();
         storeContent();
     }
@@ -79,7 +74,7 @@ public class OpenWireStreamMessage extends OpenWireMessage {
      *
      * @throws JMSException if an error occurs while reading the message.
      */
-    public List<Object> readStreamToList() throws JMSException {
+    public List<Object> readStreamToList() throws IOException {
         if (!hasContent()) {
             return Collections.emptyList();
         }
@@ -93,8 +88,8 @@ public class OpenWireStreamMessage extends OpenWireMessage {
                 result.add(readNextElement(dataIn));
             } catch (EOFException ex) {
                 break;
-            } catch (IOException e) {
-                throw ExceptionSupport.create(e);
+            } catch (Exception e) {
+                throw IOExceptionSupport.create(e);
             }
         }
 
@@ -159,23 +154,16 @@ public class OpenWireStreamMessage extends OpenWireMessage {
      * @param elements
      *        the list of elements to store into the list.
      *
-     * @throws JMSException if an error occurs while writing the elements to the message.
+     * @throws IOException if an error occurs while writing the elements to the message.
      */
-    public void writeListToStream(List<Object> elements) throws JMSException {
+    public void writeListToStream(List<Object> elements) throws IOException {
         if (elements != null && !elements.isEmpty()) {
             DataByteArrayOutputStream output = new DataByteArrayOutputStream();
             for (Object value : elements) {
-                try {
-                    writeElement(value, output);
-                } catch (IOException e) {
-                    throw ExceptionSupport.create(e);
-                }
+                writeElement(value, output);
             }
-            try {
-                output.close();
-            } catch (IOException e) {
-                throw ExceptionSupport.create(e);
-            }
+
+            output.close();
 
             setPayload(output.toBuffer());
         }

@@ -26,27 +26,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Queue;
-import javax.jms.TemporaryQueue;
-import javax.jms.TemporaryTopic;
-import javax.jms.Topic;
-
-import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
 import org.apache.activemq.openwire.annotations.OpenWireProperty;
-import org.apache.activemq.openwire.utils.DefaultUnresolvedDestinationTransformer;
-import org.apache.activemq.openwire.utils.UnresolvedDestinationTransformer;
+import org.apache.activemq.openwire.annotations.OpenWireType;
 
 /**
  * Base Destination class used to provide most of the utilities necessary to deal
  * with incoming and outgoing destination processing.
- *
- * @openwire:marshaller
  */
 @OpenWireType(typeCode = 0)
-public abstract class OpenWireDestination implements Destination, DataStructure, Comparable<OpenWireDestination> {
+public abstract class OpenWireDestination implements DataStructure, Comparable<OpenWireDestination> {
 
     public static final String PATH_SEPERATOR = ".";
     public static final char COMPOSITE_SEPERATOR = ',';
@@ -81,8 +70,6 @@ public abstract class OpenWireDestination implements Destination, DataStructure,
 
     @OpenWireExtension(serialized = true)
     protected Map<String, String> options;
-
-    protected static UnresolvedDestinationTransformer unresolvableDestinationTransformer = new DefaultUnresolvedDestinationTransformer();
 
     public OpenWireDestination() {
     }
@@ -120,40 +107,6 @@ public abstract class OpenWireDestination implements Destination, DataStructure,
         default:
             throw new IllegalArgumentException("Invalid default destination type: " + defaultType);
         }
-    }
-
-    public static OpenWireDestination transform(Destination dest) throws JMSException {
-        if (dest == null) {
-            return null;
-        }
-        if (dest instanceof OpenWireDestination) {
-            return (OpenWireDestination)dest;
-        }
-
-        if (dest instanceof Queue && dest instanceof Topic) {
-            String queueName = ((Queue) dest).getQueueName();
-            String topicName = ((Topic) dest).getTopicName();
-            if (queueName != null && topicName == null) {
-                return new OpenWireQueue(queueName);
-            } else if (queueName == null && topicName != null) {
-                return new OpenWireTopic(topicName);
-            } else {
-                return unresolvableDestinationTransformer.transform(dest);
-            }
-        }
-        if (dest instanceof TemporaryQueue) {
-            return new OpenWireTempQueue(((TemporaryQueue)dest).getQueueName());
-        }
-        if (dest instanceof TemporaryTopic) {
-            return new OpenWireTempTopic(((TemporaryTopic)dest).getTopicName());
-        }
-        if (dest instanceof Queue) {
-            return new OpenWireQueue(((Queue)dest).getQueueName());
-        }
-        if (dest instanceof Topic) {
-            return new OpenWireTopic(((Topic)dest).getTopicName());
-        }
-        throw new JMSException("Could not transform the destination into a ActiveMQ destination: " + dest);
     }
 
     public static int compare(OpenWireDestination destination, OpenWireDestination destination2) {
@@ -377,14 +330,6 @@ public abstract class OpenWireDestination implements Destination, DataStructure,
 
     public boolean isPattern() {
         return isPattern;
-    }
-
-    public static UnresolvedDestinationTransformer getUnresolvableDestinationTransformer() {
-        return unresolvableDestinationTransformer;
-    }
-
-    public static void setUnresolvableDestinationTransformer(UnresolvedDestinationTransformer unresolvableDestinationTransformer) {
-        OpenWireDestination.unresolvableDestinationTransformer = unresolvableDestinationTransformer;
     }
 
     private static Map<String, String> parseQuery(String uri) throws Exception {

@@ -19,14 +19,9 @@ package org.apache.activemq.openwire.commands;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-
-import javax.jms.JMSException;
-import javax.jms.MessageNotReadableException;
-import javax.jms.MessageNotWriteableException;
 
 import org.apache.activemq.openwire.utils.MarshallingSupport;
 import org.fusesource.hawtbuf.Buffer;
@@ -45,7 +40,7 @@ public class OpenWireTextMessageTest {
     }
 
     @Test
-    public void testShallowCopy() throws JMSException {
+    public void testShallowCopy() throws Exception {
         OpenWireTextMessage msg = new OpenWireTextMessage();
         String string = "str";
         msg.setText(string);
@@ -60,13 +55,13 @@ public class OpenWireTextMessageTest {
         try {
             msg.setText(str);
             assertEquals(msg.getText(), str);
-        } catch (JMSException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void testGetBytes() throws JMSException, IOException {
+    public void testGetBytes() throws Exception, IOException {
         OpenWireTextMessage msg = new OpenWireTextMessage();
         String str = "testText";
         msg.setText(str);
@@ -80,19 +75,13 @@ public class OpenWireTextMessageTest {
     }
 
     @Test
-    public void testClearBody() throws JMSException, IOException {
+    public void testClearBody() throws Exception, IOException {
         OpenWireTextMessage textMessage = new OpenWireTextMessage();
         textMessage.setText("string");
         textMessage.clearBody();
         assertNull(textMessage.getText());
-        try {
-            textMessage.setText("String");
-            textMessage.getText();
-        } catch (MessageNotWriteableException mnwe) {
-            fail("should be writeable");
-        } catch (MessageNotReadableException mnre) {
-            fail("should be readable");
-        }
+        textMessage.setText("String");
+        textMessage.getText();
     }
 
     @Test

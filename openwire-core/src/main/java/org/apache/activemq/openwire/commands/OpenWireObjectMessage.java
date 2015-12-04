@@ -27,12 +27,10 @@ import java.io.Serializable;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
-import javax.jms.JMSException;
-
-import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
+import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
-import org.apache.activemq.openwire.utils.ExceptionSupport;
+import org.apache.activemq.openwire.utils.IOExceptionSupport;
 import org.apache.activemq.openwire.utils.ObjectMessageInputStream;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.ByteArrayInputStream;
@@ -111,11 +109,10 @@ public class OpenWireObjectMessage extends OpenWireMessage {
      * message body in the same state as an empty body in a newly created
      * message.
      *
-     * @throws JMSException if the JMS provider fails to clear the message body
-     *                 due to some internal error.
+     * @throws IOException if an error occurs removing the body.
      */
     @Override
-    public void clearBody() throws JMSException {
+    public void clearBody() throws IOException {
         super.clearBody();
         this.object = null;
     }
@@ -134,7 +131,7 @@ public class OpenWireObjectMessage extends OpenWireMessage {
      * @throws javax.jms.MessageNotWriteableException if the message is in
      *                 read-only mode.
      */
-    public void setObject(Serializable newObject) throws JMSException {
+    public void setObject(Serializable newObject) throws IOException {
         this.object = newObject;
         setContent(null);
         storeContent();
@@ -147,7 +144,7 @@ public class OpenWireObjectMessage extends OpenWireMessage {
      * @return the serializable object containing this message's data
      * @throws JMSException
      */
-    public Serializable getObject() throws JMSException {
+    public Serializable getObject() throws IOException {
         if (object == null && getContent() != null) {
             try {
                 Buffer content = getContent();
@@ -160,13 +157,13 @@ public class OpenWireObjectMessage extends OpenWireMessage {
                 try {
                     object = (Serializable)objIn.readObject();
                 } catch (ClassNotFoundException ce) {
-                    throw ExceptionSupport.create("Failed to build body from content. Serializable class not available to broker. Reason: " + ce, ce);
+                    throw IOExceptionSupport.create("Failed to build body from content. Serializable class not available to broker. Reason: " + ce, ce);
                 } finally {
                     dataIn.close();
                     objIn.close();
                 }
-            } catch (IOException e) {
-                throw ExceptionSupport.create("Failed to build body from bytes. Reason: " + e, e);
+            } catch (Exception e) {
+                throw IOExceptionSupport.create("Failed to build body from bytes. Reason: " + e, e);
             }
         }
         return this.object;
@@ -179,7 +176,7 @@ public class OpenWireObjectMessage extends OpenWireMessage {
     }
 
     @Override
-    public void clearMarshalledState() throws JMSException {
+    public void clearMarshalledState() throws IOException {
         super.clearMarshalledState();
         this.object = null;
     }
@@ -194,7 +191,7 @@ public class OpenWireObjectMessage extends OpenWireMessage {
     public String toString() {
         try {
             getObject();
-        } catch (JMSException e) {
+        } catch (IOException e) {
         }
         return super.toString();
     }

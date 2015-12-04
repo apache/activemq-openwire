@@ -16,16 +16,10 @@
  */
 package org.apache.activemq.openwire.commands;
 
-import javax.jms.JMSException;
-import javax.jms.TemporaryTopic;
-
 import org.apache.activemq.openwire.annotations.OpenWireType;
 
-/**
- * @openwire:marshaller code="103"
- */
 @OpenWireType(typeCode = 103)
-public class OpenWireTempTopic extends OpenWireTempDestination implements TemporaryTopic {
+public class OpenWireTempTopic extends OpenWireTempDestination {
 
     public static final byte DATA_STRUCTURE_TYPE = CommandTypes.OPENWIRE_TEMP_TOPIC;
 
@@ -60,13 +54,7 @@ public class OpenWireTempTopic extends OpenWireTempDestination implements Tempor
         return TEMP_TOPIC_QUALIFED_PREFIX;
     }
 
-    @Override
-    public String getTopicName() throws JMSException {
+    public String getTopicName() {
         return getPhysicalName();
-    }
-
-    @Override
-    public void delete() throws JMSException {
-
     }
 }

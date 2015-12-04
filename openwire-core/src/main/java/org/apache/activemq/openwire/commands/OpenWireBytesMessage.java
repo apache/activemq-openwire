@@ -21,9 +21,6 @@ import java.util.Arrays;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-import javax.jms.JMSException;
-import javax.jms.MessageNotReadableException;
-
 import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.BufferEditor;
@@ -70,12 +67,10 @@ public class OpenWireBytesMessage extends OpenWireMessage {
      * of where the pointer for reading the message is currently located.
      *
      * @return number of bytes in the message
-     * @throws JMSException if the JMS provider fails to read the message due to
-     *                 some internal error.
-     * @throws MessageNotReadableException if the message is in write-only mode.
-     * @since 1.1
+     *
+     * @throws IOException if there is an error in retrieving the body length value.
      */
-    public long getBodyLength() throws JMSException {
+    public long getBodyLength() throws IOException {
         if (compressed) {
             return getBodyBytes().length;
         } else if (content != null) {
@@ -96,9 +91,9 @@ public class OpenWireBytesMessage extends OpenWireMessage {
      *
      * @return a copy of the message contents, uncompressed as needed.
      *
-     * @throws JMSException if an error occurs while accessing the message payload.
+     * @throws IOException if an error occurs while accessing the message payload.
      */
-    public byte[] getBodyBytes() throws JMSException {
+    public byte[] getBodyBytes() throws IOException {
         Buffer data = getPayload();
         if (data == null) {
             data = new Buffer(new byte[] {}, 0, 0);

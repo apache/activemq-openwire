@@ -28,13 +28,11 @@ import java.util.Map;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
-import javax.jms.JMSException;
-
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
 import org.apache.activemq.openwire.annotations.OpenWireProperty;
 import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
-import org.apache.activemq.openwire.utils.ExceptionSupport;
+import org.apache.activemq.openwire.utils.IOExceptionSupport;
 import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.ByteArrayInputStream;
@@ -43,8 +41,6 @@ import org.fusesource.hawtbuf.UTF8Buffer;
 
 /**
  * Represents an ActiveMQ message
- *
- * @openwire:marshaller
  */
 @OpenWireType(typeCode = 0, marshalAware = true)
 public abstract class Message extends BaseCommand implements MarshallAware {
@@ -153,12 +149,12 @@ public abstract class Message extends BaseCommand implements MarshallAware {
     protected Map<String, Object> properties;
 
     public abstract Message copy();
-    public abstract void clearBody() throws JMSException;
+    public abstract void clearBody() throws IOException;
     public abstract void storeContent();
     public abstract void storeContentAndClear();
 
     // useful to reduce the memory footprint of a persisted message
-    public void clearMarshalledState() throws JMSException {
+    public void clearMarshalledState() throws IOException {
         properties = null;
     }
 
@@ -216,20 +212,20 @@ public abstract class Message extends BaseCommand implements MarshallAware {
         return Collections.unmodifiableMap(properties);
     }
 
-    public void clearProperties() throws JMSException {
+    public void clearProperties() throws IOException {
         marshalledProperties = null;
         properties = null;
     }
 
-    public Object getProperty(String name) throws JMSException {
+    public Object getProperty(String name) throws IOException {
         if (properties == null) {
             if (marshalledProperties == null) {
                 return null;
             }
             try {
                 properties = unmarsallProperties(marshalledProperties);
-            } catch (IOException e) {
-                throw ExceptionSupport.create("Error during properties unmarshal, reason: " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw IOExceptionSupport.create("Error during properties unmarshal, reason: " + e.getMessage(), e);
             }
         }
         Object result = properties.get(name);
@@ -240,25 +236,25 @@ public abstract class Message extends BaseCommand implements MarshallAware {
         return result;
     }
 
-    public void setProperty(String name, Object value) throws JMSException {
+    public void setProperty(String name, Object value) throws IOException {
         lazyCreateProperties();
         properties.put(name, value);
     }
 
-    public void removeProperty(String name) throws JMSException {
+    public void removeProperty(String name) throws IOException {
         lazyCreateProperties();
         properties.remove(name);
     }
 
-    protected void lazyCreateProperties() throws JMSException {
+    protected void lazyCreateProperties() throws IOException {
         if (properties == null) {
             if (marshalledProperties == null) {
                 properties = new HashMap<String, Object>();
             } else {
                 try {
                     properties = unmarsallProperties(marshalledProperties);
-                } catch (IOException e) {
-                    throw ExceptionSupport.create(
+                } catch (Exception e) {
+                    throw IOExceptionSupport.create(
                         "Error during properties unmarshal, reason: " + e.getMessage(), e);
                 }
                 marshalledProperties = null;

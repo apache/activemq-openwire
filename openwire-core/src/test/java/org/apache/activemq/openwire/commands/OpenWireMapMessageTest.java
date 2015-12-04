@@ -27,10 +27,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.jms.JMSException;
-import javax.jms.MessageFormatException;
-
-import org.apache.activemq.openwire.commands.OpenWireMapMessage;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -45,7 +41,7 @@ public class OpenWireMapMessageTest {
     public TestName name = new TestName();
 
     @Test
-    public void testBytesConversion() throws JMSException, IOException {
+    public void testBytesConversion() throws Exception {
         OpenWireMapMessage msg = new OpenWireMapMessage();
         msg.setObject("boolean", true);
         msg.setObject("byte", (byte) 1);
@@ -68,7 +64,7 @@ public class OpenWireMapMessageTest {
 
         msg.setObject("bigString", bigString);
 
-        msg = (OpenWireMapMessage) msg.copy();
+        msg = msg.copy();
 
         assertEquals(msg.getObject("boolean"), true);
         assertEquals(msg.getObject("byte"), (byte) 1);
@@ -85,7 +81,7 @@ public class OpenWireMapMessageTest {
     }
 
     @Test
-    public void testGetObject() throws JMSException {
+    public void testGetObject() throws Exception {
         OpenWireMapMessage msg = new OpenWireMapMessage();
         Boolean booleanValue = Boolean.TRUE;
         Byte byteValue = Byte.valueOf("1");
@@ -109,13 +105,13 @@ public class OpenWireMapMessageTest {
             msg.setObject("long", longValue);
             msg.setObject("short", shortValue);
             msg.setObject("string", stringValue);
-        } catch (MessageFormatException mfe) {
-            LOG.warn("Caught: " + mfe);
-            mfe.printStackTrace();
+        } catch (IOException ioe) {
+            LOG.warn("Caught: " + ioe);
+            ioe.printStackTrace();
             fail("object formats should be correct");
         }
 
-        msg = (OpenWireMapMessage) msg.copy();
+        msg = msg.copy();
 
         assertTrue(msg.getObject("boolean") instanceof Boolean);
         assertEquals(msg.getObject("boolean"), booleanValue);
@@ -143,12 +139,12 @@ public class OpenWireMapMessageTest {
         try {
             msg.setObject("object", new Object());
             fail("should have thrown exception");
-        } catch (MessageFormatException e) {
+        } catch (IllegalArgumentException e) {
         }
     }
 
     @Test
-    public void testGetMapNames() throws JMSException {
+    public void testGetMapNames() throws Exception {
         OpenWireMapMessage msg = new OpenWireMapMessage();
         msg.setObject("boolean", true);
         msg.setObject("byte", (byte) 1);
@@ -162,7 +158,7 @@ public class OpenWireMapMessageTest {
         msg.setObject("short", (short) 1);
         msg.setObject("string", "string");
 
-        msg = (OpenWireMapMessage) msg.copy();
+        msg = msg.copy();
 
         Enumeration<String> mapNamesEnum = msg.getMapNames();
         List<String> mapNamesList = Collections.list(mapNamesEnum);
@@ -182,19 +178,19 @@ public class OpenWireMapMessageTest {
     }
 
     @Test
-    public void testItemExists() throws JMSException {
+    public void testItemExists() throws Exception {
         OpenWireMapMessage mapMessage = new OpenWireMapMessage();
 
         mapMessage.setObject("exists", "test");
 
-        mapMessage = (OpenWireMapMessage) mapMessage.copy();
+        mapMessage = mapMessage.copy();
 
         assertTrue(mapMessage.itemExists("exists"));
         assertFalse(mapMessage.itemExists("doesntExist"));
     }
 
     @Test
-    public void testClearBody() throws JMSException {
+    public void testClearBody() throws Exception {
         OpenWireMapMessage mapMessage = new OpenWireMapMessage();
         mapMessage.setObject("String", "String");
         mapMessage.clearBody();
@@ -204,7 +200,7 @@ public class OpenWireMapMessageTest {
         mapMessage.clearBody();
         mapMessage.setObject("String", "String");
 
-        mapMessage = (OpenWireMapMessage) mapMessage.copy();
+        mapMessage = mapMessage.copy();
 
         mapMessage.getObject("String");
     }

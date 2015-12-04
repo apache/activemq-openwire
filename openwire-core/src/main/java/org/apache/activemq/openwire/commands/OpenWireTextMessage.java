@@ -22,21 +22,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.jms.JMSException;
-import javax.jms.MessageNotWriteableException;
-
-import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
+import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
-import org.apache.activemq.openwire.utils.ExceptionSupport;
+import org.apache.activemq.openwire.utils.IOExceptionSupport;
 import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.ByteArrayInputStream;
 import org.fusesource.hawtbuf.ByteArrayOutputStream;
 
-/**
- * openwire:marshaller code="28"
- */
 @OpenWireType(typeCode = 28)
 public class OpenWireTextMessage extends OpenWireMessage {
 
@@ -67,12 +61,12 @@ public class OpenWireTextMessage extends OpenWireMessage {
         return "jms/text-message";
     }
 
-    public void setText(String text) throws MessageNotWriteableException {
+    public void setText(String text) {
         this.text = text;
         setContent(null);
     }
 
-    public String getText() throws JMSException {
+    public String getText() throws IOException {
         if (text == null && getContent() != null) {
             text = decodeContent();
             setContent(null);
@@ -80,7 +74,7 @@ public class OpenWireTextMessage extends OpenWireMessage {
         return text;
     }
 
-    private String decodeContent() throws JMSException {
+    private String decodeContent() throws IOException {
         String text = null;
         if (hasContent()) {
             InputStream is = null;
@@ -89,8 +83,8 @@ public class OpenWireTextMessage extends OpenWireMessage {
                 DataInputStream dataIn = new DataInputStream(is);
                 text = OpenWireMarshallingSupport.readUTF8(dataIn);
                 dataIn.close();
-            } catch (IOException ioe) {
-                throw ExceptionSupport.create(ioe);
+            } catch (Exception ex) {
+                throw IOExceptionSupport.create(ex);
             } finally {
                 if (is != null) {
                     try {
@@ -134,7 +128,7 @@ public class OpenWireTextMessage extends OpenWireMessage {
     }
 
     @Override
-    public void clearMarshalledState() throws JMSException {
+    public void clearMarshalledState() throws IOException {
         super.clearMarshalledState();
         this.text = null;
     }
@@ -147,11 +141,11 @@ public class OpenWireTextMessage extends OpenWireMessage {
      * message body in the same state as an empty body in a newly created
      * message.
      *
-     * @throws JMSException if the JMS provider fails to clear the message body
+     * @throws IOException if the JMS provider fails to clear the message body
      *                 due to some internal error.
      */
     @Override
-    public void clearBody() throws JMSException {
+    public void clearBody() throws IOException {
         super.clearBody();
         this.text = null;
     }
@@ -174,7 +168,7 @@ public class OpenWireTextMessage extends OpenWireMessage {
         if( text == null ) {
             try {
                 text = decodeContent();
-            } catch (JMSException ex) {
+            } catch (IOException ex) {
             }
         }
         if (text != null) {

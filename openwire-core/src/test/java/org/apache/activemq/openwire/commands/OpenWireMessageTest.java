@@ -26,18 +26,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.jms.DeliveryMode;
-import javax.jms.JMSException;
-import javax.jms.Message;
-
 import org.apache.activemq.openwire.codec.OpenWireFormat;
-import org.apache.activemq.openwire.commands.CommandTypes;
-import org.apache.activemq.openwire.commands.OpenWireBytesMessage;
-import org.apache.activemq.openwire.commands.OpenWireDestination;
-import org.apache.activemq.openwire.commands.OpenWireMessage;
-import org.apache.activemq.openwire.commands.OpenWireObjectMessage;
-import org.apache.activemq.openwire.commands.OpenWireTempTopic;
-import org.apache.activemq.openwire.commands.OpenWireTopic;
 import org.fusesource.hawtbuf.Buffer;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +39,7 @@ public class OpenWireMessageTest {
 
     protected boolean readOnlyMessage;
 
-    private String jmsMessageID;
+    private MessageId myMessageID;
     private String jmsCorrelationID;
     private OpenWireDestination jmsDestination;
     private OpenWireDestination jmsReplyTo;
@@ -64,11 +53,11 @@ public class OpenWireMessageTest {
 
     @Before
     public void setUp() throws Exception {
-        this.jmsMessageID = "ID:TEST-ID:0:0:0:1";
+        this.myMessageID = new MessageId("ID:TEST-ID:0:0:0:1");
         this.jmsCorrelationID = "testcorrelationid";
         this.jmsDestination = new OpenWireTopic("test.topic");
         this.jmsReplyTo = new OpenWireTempTopic("test.replyto.topic:001");
-        this.jmsDeliveryMode = Message.DEFAULT_DELIVERY_MODE;
+        this.jmsDeliveryMode = 1;
         this.jmsRedelivered = true;
         this.jmsType = "test type";
         this.jmsExpiration = 100000;
@@ -87,12 +76,12 @@ public class OpenWireMessageTest {
         assertEquals(msg.getDataStructureType(), CommandTypes.OPENWIRE_MESSAGE);
     }
 
-//    @Test
-//    public void testHashCode() throws Exception {
-//        OpenWireMessage msg = new OpenWireMessage();
-//        msg.setMessageId(this.jmsMessageID);
-//        assertTrue(msg.getMessageId().hashCode() == jmsMessageID.hashCode());
-//    }
+    @Test
+    public void testHashCode() throws Exception {
+        OpenWireMessage msg = new OpenWireMessage();
+        msg.setMessageId(this.myMessageID);
+        assertEquals(msg.getMessageId().hashCode(), myMessageID.hashCode());
+    }
 
     @Test
     public void testSetToForeignJMSID() throws Exception {
@@ -104,67 +93,66 @@ public class OpenWireMessageTest {
     public void testEqualsObject() throws Exception {
         OpenWireMessage msg1 = new OpenWireMessage();
         OpenWireMessage msg2 = new OpenWireMessage();
-        msg1.setMessageId(this.jmsMessageID);
+        msg1.setMessageId(this.myMessageID);
         assertTrue(!msg1.equals(msg2));
-        msg2.setMessageId(this.jmsMessageID);
+        msg2.setMessageId(this.myMessageID);
         assertTrue(msg1.equals(msg2));
     }
 
     @Test
     public void testShallowCopy() throws Exception {
         OpenWireMessage msg1 = new OpenWireMessage();
-        msg1.setMessageId(jmsMessageID);
+        msg1.setMessageId(myMessageID);
         OpenWireMessage msg2 = msg1.copy();
         assertTrue(msg1 != msg2 && msg1.equals(msg2));
     }
 
-//    @Test
-//    public void testCopy() throws Exception {
-//        this.jmsMessageID = "testid";
-//        this.jmsCorrelationID = "testcorrelationid";
-//        this.jmsDestination = new OpenWireTopic("test.topic");
-//        this.jmsReplyTo = new OpenWireTempTopic("test.replyto.topic:001");
-//        this.jmsDeliveryMode = Message.DEFAULT_DELIVERY_MODE;
-//        this.jmsRedelivered = true;
-//        this.jmsType = "test type";
-//        this.jmsExpiration = 100000;
-//        this.jmsPriority = 5;
-//        this.jmsTimestamp = System.currentTimeMillis();
-//        this.readOnlyMessage = false;
-//
-//        OpenWireMessage msg1 = new OpenWireMessage();
-//        msg1.setMessageId(this.jmsMessageID);
-//        msg1.setCorrelationId(this.jmsCorrelationID);
-//        msg1.setDestination(this.jmsDestination);
-//        msg1.setReplyTo(this.jmsReplyTo);
-//        msg1.setPersistent(this.jmsDeliveryMode == DeliveryMode.PERSISTENT);
-//        msg1.setRedelivered(this.jmsRedelivered);
-//        msg1.setType(this.jmsType);
-//        msg1.setExpiration(this.jmsExpiration);
-//        msg1.setPriority((byte) this.jmsPriority);
-//        msg1.setTimestamp(this.jmsTimestamp);
-//        msg1.setReadOnlyProperties(true);
-//        OpenWireMessage msg2 = new OpenWireMessage();
-//        msg1.copy(msg2);
-//        assertEquals(msg1.getMessageId(), msg2.getMessageId());
-//        assertTrue(msg1.getCorrelationId().equals(msg2.getCorrelationId()));
-//        assertTrue(msg1.getDestination().equals(msg2.getDestination()));
-//        assertTrue(msg1.getReplyTo().equals(msg2.getReplyTo()));
-//        assertTrue(msg1.isPersistent() == msg2.isPersistent());
-//        assertTrue(msg1.isRedelivered() == msg2.isRedelivered());
-//        assertTrue(msg1.getType().equals(msg2.getType()));
-//        assertTrue(msg1.getExpiration() == msg2.getExpiration());
-//        assertTrue(msg1.getPriority() == msg2.getPriority());
-//        assertTrue(msg1.getTimestamp() == msg2.getTimestamp());
-//
-//        LOG.info("Message is:  " + msg1);
-//    }
+    @Test
+    public void testCopy() throws Exception {
+        this.myMessageID = new MessageId("ID:TEST-ID:0:0:0:2");
+        this.jmsCorrelationID = "testcorrelationid";
+        this.jmsDestination = new OpenWireTopic("test.topic");
+        this.jmsReplyTo = new OpenWireTempTopic("test.replyto.topic:001");
+        this.jmsDeliveryMode = 1;
+        this.jmsRedelivered = true;
+        this.jmsType = "test type";
+        this.jmsExpiration = 100000;
+        this.jmsPriority = 5;
+        this.jmsTimestamp = System.currentTimeMillis();
+        this.readOnlyMessage = false;
+
+        OpenWireMessage msg1 = new OpenWireMessage();
+        msg1.setMessageId(this.myMessageID);
+        msg1.setCorrelationId(this.jmsCorrelationID);
+        msg1.setDestination(this.jmsDestination);
+        msg1.setReplyTo(this.jmsReplyTo);
+        msg1.setPersistent(this.jmsDeliveryMode == 1);
+        msg1.setRedelivered(this.jmsRedelivered);
+        msg1.setType(this.jmsType);
+        msg1.setExpiration(this.jmsExpiration);
+        msg1.setPriority((byte) this.jmsPriority);
+        msg1.setTimestamp(this.jmsTimestamp);
+        OpenWireMessage msg2 = new OpenWireMessage();
+        msg1.copy(msg2);
+        assertEquals(msg1.getMessageId(), msg2.getMessageId());
+        assertTrue(msg1.getCorrelationId().equals(msg2.getCorrelationId()));
+        assertTrue(msg1.getDestination().equals(msg2.getDestination()));
+        assertTrue(msg1.getReplyTo().equals(msg2.getReplyTo()));
+        assertTrue(msg1.isPersistent() == msg2.isPersistent());
+        assertTrue(msg1.isRedelivered() == msg2.isRedelivered());
+        assertTrue(msg1.getType().equals(msg2.getType()));
+        assertTrue(msg1.getExpiration() == msg2.getExpiration());
+        assertTrue(msg1.getPriority() == msg2.getPriority());
+        assertTrue(msg1.getTimestamp() == msg2.getTimestamp());
+
+        LOG.info("Message is:  " + msg1);
+    }
 
     @Test
     public void testGetAndSetMessageId() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
-        msg.setMessageId(this.jmsMessageID);
-        assertEquals(msg.getMessageId().toString(), this.jmsMessageID);
+        msg.setMessageId(this.myMessageID);
+        assertEquals(msg.getMessageId().toString(), this.myMessageID.toString());
     }
 
     @Test
@@ -201,7 +189,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testGetAndSetJMSReplyTo() throws JMSException {
+    public void testGetAndSetJMSReplyTo() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         msg.setReplyTo(this.jmsReplyTo);
         assertTrue(msg.getReplyTo().equals(this.jmsReplyTo));
@@ -217,7 +205,7 @@ public class OpenWireMessageTest {
     @Test
     public void testGetAndSetPersistentFlag() {
         OpenWireMessage msg = new OpenWireMessage();
-        boolean persistent = this.jmsDeliveryMode == DeliveryMode.PERSISTENT;
+        boolean persistent = this.jmsDeliveryMode == 1;
         msg.setPersistent(persistent);
         assertTrue(msg.isPersistent() == persistent);
     }
@@ -257,11 +245,11 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testClearProperties() throws JMSException {
+    public void testClearProperties() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         msg.setProperty("test", "test");
         msg.setContent(new Buffer(new byte[1], 0, 0));
-        msg.setMessageId(this.jmsMessageID);
+        msg.setMessageId(this.myMessageID);
         msg.clearProperties();
         assertNull(msg.getProperty("test"));
         assertNotNull(msg.getMessageId());
@@ -269,7 +257,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testPropertyExists() throws JMSException {
+    public void testPropertyExists() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         msg.setProperty("test", "test");
         assertTrue(msg.propertyExists("test"));
@@ -279,7 +267,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testGetBooleanProperty() throws JMSException {
+    public void testGetBooleanProperty() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         String name = "booleanProperty";
         msg.setProperty(name, true);
@@ -287,7 +275,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testGetByteProperty() throws JMSException {
+    public void testGetByteProperty() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         String name = "byteProperty";
         msg.setProperty(name, (byte) 1);
@@ -295,7 +283,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testGetShortProperty() throws JMSException {
+    public void testGetShortProperty() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         String name = "shortProperty";
         msg.setProperty(name, (short) 1);
@@ -303,7 +291,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testGetIntProperty() throws JMSException {
+    public void testGetIntProperty() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         String name = "intProperty";
         msg.setProperty(name, 1);
@@ -311,7 +299,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testGetLongProperty() throws JMSException {
+    public void testGetLongProperty() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         String name = "longProperty";
         msg.setProperty(name, 1L);
@@ -319,7 +307,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testGetFloatProperty() throws JMSException {
+    public void testGetFloatProperty() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         String name = "floatProperty";
         msg.setProperty(name, 1.3f);
@@ -327,7 +315,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testGetDoubleProperty() throws JMSException {
+    public void testGetDoubleProperty() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         String name = "doubleProperty";
         msg.setProperty(name, 1.3d);
@@ -335,7 +323,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testGetStringProperty() throws JMSException {
+    public void testGetStringProperty() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         String name = "stringProperty";
         msg.setProperty(name, name);
@@ -343,7 +331,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testgetProperty() throws JMSException {
+    public void testgetProperty() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         String name = "floatProperty";
         msg.setProperty(name, 1.3f);
@@ -382,7 +370,7 @@ public class OpenWireMessageTest {
         roundTripProperties(message);
     }
 
-    private void roundTripProperties(OpenWireObjectMessage message) throws IOException, JMSException {
+    private void roundTripProperties(OpenWireObjectMessage message) throws IOException, Exception {
         OpenWireObjectMessage copy = new OpenWireObjectMessage();
         for (Map.Entry<String, Object> prop : message.getProperties().entrySet()) {
             LOG.debug("{} -> {}", prop.getKey(), prop.getValue().getClass());
@@ -401,7 +389,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testSetNullProperty() throws JMSException {
+    public void testSetNullProperty() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         String name = "cheese";
         msg.setProperty(name, "Cheddar");
@@ -412,7 +400,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testSetNullPropertyName() throws JMSException {
+    public void testSetNullPropertyName() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
 
         try {
@@ -424,7 +412,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testSetEmptyPropertyName() throws JMSException {
+    public void testSetEmptyPropertyName() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
 
         try {
@@ -436,7 +424,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testGetAndSetDeliveryCount() throws JMSException {
+    public void testGetAndSetDeliveryCount() throws Exception {
         OpenWireMessage msg = new OpenWireMessage();
         msg.setRedeliveryCounter(1);
         int count = msg.getRedeliveryCounter();
@@ -444,7 +432,7 @@ public class OpenWireMessageTest {
     }
 
     @Test
-    public void testClearBody() throws JMSException {
+    public void testClearBody() throws Exception {
         OpenWireBytesMessage message = new OpenWireBytesMessage();
         message.clearBody();
         assertNull(message.getContent());

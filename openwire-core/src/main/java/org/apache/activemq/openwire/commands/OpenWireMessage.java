@@ -23,12 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.jms.JMSException;
-import javax.jms.MessageFormatException;
-
-import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
-import org.apache.activemq.openwire.utils.ExceptionSupport;
+import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.utils.IOExceptionSupport;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
 
@@ -100,7 +97,7 @@ public class OpenWireMessage extends Message {
     }
 
     @Override
-    public void clearBody() throws JMSException {
+    public void clearBody() throws IOException {
         setContent(null);
     }
 
@@ -112,11 +109,11 @@ public class OpenWireMessage extends Message {
         return messageId.toString();
     }
 
-    public byte[] getCorrelationIdAsBytes() throws JMSException {
+    public byte[] getCorrelationIdAsBytes() throws IOException {
         return encodeString(this.getCorrelationId());
     }
 
-    public void setCorrelationIdAsBytes(byte[] correlationId) throws JMSException {
+    public void setCorrelationIdAsBytes(byte[] correlationId) throws IOException {
         this.setCorrelationId(decodeString(correlationId));
     }
 
@@ -142,15 +139,15 @@ public class OpenWireMessage extends Message {
      *
      * @throws JMSException if an error occurs while accessing the message payload.
      */
-    public Buffer getPayload() throws JMSException {
+    public Buffer getPayload() throws IOException {
         Buffer data = getContent();
         if (data == null) {
             data = new Buffer(new byte[] {}, 0, 0);
         } else if (isCompressed()) {
             try {
                 return decompress();
-            } catch (IOException e) {
-                throw ExceptionSupport.create(e);
+            } catch (Exception e) {
+                throw IOExceptionSupport.create(e);
             }
         }
 
@@ -167,9 +164,9 @@ public class OpenWireMessage extends Message {
      * @param bytes
      *        the new byte array to use to fill the message body.
      *
-     * @throws JMSException if an error occurs while accessing the message payload.
+     * @throws IOException if an error occurs while accessing the message payload.
      */
-    public void setPayload(byte[] bytes) throws JMSException {
+    public void setPayload(byte[] bytes) throws IOException {
         setPayload(new Buffer(bytes));
     }
 
@@ -185,14 +182,14 @@ public class OpenWireMessage extends Message {
      *
      * @throws JMSException if an error occurs while accessing the message payload.
      */
-    public void setPayload(Buffer buffer) throws JMSException {
+    public void setPayload(Buffer buffer) throws IOException {
         try {
             setContent(buffer);
             if (isUseCompression()) {
                 doCompress();
             }
-        } catch (IOException ioe) {
-            throw ExceptionSupport.create(ioe);
+        } catch (Exception ex) {
+            throw IOExceptionSupport.create(ex);
         }
     }
 
@@ -203,9 +200,9 @@ public class OpenWireMessage extends Message {
      * @param value
      *        the string Message ID value to assign to this message.
      *
-     * @throws JMSException if an error occurs while parsing the String to a MessageID
+     * @throws IOException if an error occurs while parsing the String to a MessageID
      */
-    public void setMessageId(String value) throws JMSException {
+    public void setMessageId(String value) throws IOException {
         if (value != null) {
             try {
                 MessageId id = new MessageId(value);
@@ -231,36 +228,36 @@ public class OpenWireMessage extends Message {
      *
      * @throws JMSException if an error occurs while setting this MessageId
      */
-    public void setMessageId(ProducerId producerId, long producerSequenceId) throws JMSException {
+    public void setMessageId(ProducerId producerId, long producerSequenceId) throws IOException {
         MessageId id = null;
         try {
             id = new MessageId(producerId, producerSequenceId);
             this.setMessageId(id);
         } catch (Throwable e) {
-            throw ExceptionSupport.create("Invalid message id '" + id + "', reason: " + e.getMessage(), e);
+            throw IOExceptionSupport.create("Invalid message id '" + id + "', reason: " + e.getMessage(), e);
         }
     }
 
-    public boolean propertyExists(String name) throws JMSException {
+    public boolean propertyExists(String name) throws IOException {
         try {
             return (this.getProperties().containsKey(name) || getProperty(name)!= null);
-        } catch (IOException e) {
-            throw ExceptionSupport.create(e);
+        } catch (Exception e) {
+            throw IOExceptionSupport.create(e);
         }
     }
 
     @SuppressWarnings("rawtypes")
-    public Enumeration getPropertyNames() throws JMSException {
+    public Enumeration getPropertyNames() throws IOException {
         try {
             Vector<String> result = new Vector<String>(this.getProperties().keySet());
             return result.elements();
-        } catch (IOException e) {
-            throw ExceptionSupport.create(e);
+        } catch (Exception e) {
+            throw IOExceptionSupport.create(e);
         }
     }
 
     @Override
-    public void setProperty(String name, Object value) throws JMSException {
+    public void setProperty(String name, Object value) throws IOException {
         setProperty(name, value, true);
     }
 
@@ -276,7 +273,7 @@ public class OpenWireMessage extends Message {
      *
      * @throws JMSException if an error occurs while setting the properties.
      */
-    public void setProperties(Map<String, ?> properties) throws JMSException {
+    public void setProperties(Map<String, ?> properties) throws IOException {
         for (Map.Entry<String, ?> entry : properties.entrySet()) {
             setProperty(entry.getKey(), entry.getValue());
         }
@@ -295,9 +292,9 @@ public class OpenWireMessage extends Message {
      * @param checkValid
      *        indicates if a type validity check should be performed on the given object.
      *
-     * @throws JMSException if an error occurs while attempting to set the property value.
+     * @throws IOException if an error occurs while attempting to set the property value.
      */
-    public void setProperty(String name, Object value, boolean checkValid) throws JMSException {
+    public void setProperty(String name, Object value, boolean checkValid) throws IOException {
         if (name == null || name.equals("")) {
             throw new IllegalArgumentException("Property name cannot be empty or null");
         }
@@ -367,45 +364,48 @@ public class OpenWireMessage extends Message {
      * Method that allows an application to inform the Message instance that it is
      * about to be sent and that it should prepare its internal state for dispatch.
      *
-     * @throws JMSException if an error occurs or Message state is invalid.
+     * @throws IOException if an error occurs or Message state is invalid.
      */
-    public void onSend() throws JMSException {
+    public void onSend() throws IOException {
     }
 
-    protected void checkValidObject(Object value) throws MessageFormatException {
+    protected void checkValidObject(Object value) throws IOException {
+
+        // TODO - We can probably remove these nested enabled check, the provider should
+        //        do this since we are just a codec.
         boolean valid = value instanceof Boolean || value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long;
         valid = valid || value instanceof Float || value instanceof Double || value instanceof Character || value instanceof String || value == null;
 
         if (!valid) {
             if (isNestedMapAndListAllowed()) {
                 if (!(value instanceof Map || value instanceof List)) {
-                    throw new MessageFormatException("Only objectified primitive objects, String, Map and List types are allowed but was: " + value + " type: " + value.getClass());
+                    throw new IllegalArgumentException("Only objectified primitive objects, String, Map and List types are allowed but was: " + value + " type: " + value.getClass());
                 }
             } else {
-                throw new MessageFormatException("Only objectified primitive objects and String types are allowed but was: " + value + " type: " + value.getClass());
+                throw new IllegalArgumentException("Only objectified primitive objects and String types are allowed but was: " + value + " type: " + value.getClass());
             }
         }
     }
 
-    protected static String decodeString(byte[] data) throws JMSException {
+    protected static String decodeString(byte[] data) throws IOException {
         try {
             if (data == null) {
                 return null;
             }
             return new String(data, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new JMSException("Invalid UTF-8 encoding: " + e.getMessage());
+            throw IOExceptionSupport.create("Invalid UTF-8 encoding: " + e.getMessage(), e);
         }
     }
 
-    protected static byte[] encodeString(String data) throws JMSException {
+    protected static byte[] encodeString(String data) throws IOException {
         try {
             if (data == null) {
                 return null;
             }
             return data.getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new JMSException("Invalid UTF-8 encoding: " + e.getMessage());
+            throw IOExceptionSupport.create("Invalid UTF-8 encoding: " + e.getMessage(), e);
         }
     }
 }

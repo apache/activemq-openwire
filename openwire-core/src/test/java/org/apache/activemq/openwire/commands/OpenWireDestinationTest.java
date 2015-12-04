@@ -18,7 +18,6 @@ package org.apache.activemq.openwire.commands;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -29,17 +28,6 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.jms.JMSException;
-import javax.jms.Queue;
-import javax.jms.TemporaryQueue;
-import javax.jms.TemporaryTopic;
-import javax.jms.Topic;
-
-import org.apache.activemq.openwire.commands.OpenWireDestination;
-import org.apache.activemq.openwire.commands.OpenWireQueue;
-import org.apache.activemq.openwire.commands.OpenWireTempQueue;
-import org.apache.activemq.openwire.commands.OpenWireTempTopic;
-import org.apache.activemq.openwire.commands.OpenWireTopic;
 import org.junit.Test;
 
 /**
@@ -58,7 +46,7 @@ public class OpenWireDestinationTest {
         assertEquals("Sorted order", expected, actual);
     }
 
-    class CombyDest implements Queue, Topic, TemporaryQueue, TemporaryTopic {
+    class CombyDest {
 
         private final String qName;
         private final String topicName;
@@ -68,35 +56,12 @@ public class OpenWireDestinationTest {
             this.topicName = topicName;
         }
 
-        @Override
-        public void delete() throws JMSException {}
-
-        @Override
-        public String getTopicName() throws JMSException {
+        public String getTopicName() {
             return topicName;
         }
 
-        @Override
-        public String getQueueName() throws JMSException {
+        public String getQueueName() {
             return qName;
-        }
-    }
-
-    @Test
-    public void testTransformPollymorphic() throws Exception {
-        OpenWireQueue queue = new OpenWireQueue("TEST");
-        assertEquals(OpenWireDestination.transform(queue), queue);
-        assertTrue("is a q", OpenWireDestination.transform(new CombyDest(null, "Topic")) instanceof OpenWireTopic);
-        assertTrue("is a q", OpenWireDestination.transform(new CombyDest("Q", null)) instanceof OpenWireQueue);
-        try {
-            OpenWireDestination.transform(new CombyDest(null, null));
-            fail("expect ex as cannot disambiguate");
-        } catch (JMSException expected) {
-        }
-        try {
-            OpenWireDestination.transform(new CombyDest("Q", "T"));
-            fail("expect ex as cannot disambiguate");
-        } catch (JMSException expected) {
         }
     }
 

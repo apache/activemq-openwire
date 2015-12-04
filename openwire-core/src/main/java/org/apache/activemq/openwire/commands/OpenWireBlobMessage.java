@@ -17,20 +17,15 @@
 package org.apache.activemq.openwire.commands;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.jms.JMSException;
-
-import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
 import org.apache.activemq.openwire.annotations.OpenWireProperty;
+import org.apache.activemq.openwire.annotations.OpenWireType;
 
 /**
  * An implementation of ActiveMQ's BlobMessage for out of band BLOB transfer
- *
- * openwire:marshaller code="29"
  */
 @OpenWireType(typeCode = 29, version = 3)
 public class OpenWireBlobMessage extends OpenWireMessage {
@@ -126,16 +121,12 @@ public class OpenWireBlobMessage extends OpenWireMessage {
         this.deletedByBroker = deletedByBroker;
     }
 
-    public InputStream getInputStream() throws IOException, JMSException {
-        return null;
-    }
-
-    public URL getURL() throws JMSException {
+    public URL getURL() throws IOException {
         if (url == null && remoteBlobUrl != null) {
             try {
                 url = new URL(remoteBlobUrl);
             } catch (MalformedURLException e) {
-                throw new JMSException(e.getMessage());
+                throw new IOException(e.getMessage());
             }
         }
         return url;
@@ -144,17 +135,5 @@ public class OpenWireBlobMessage extends OpenWireMessage {
     public void setURL(URL url) {
         this.url = url;
         remoteBlobUrl = url != null ? url.toExternalForm() : null;
-    }
-
-    @Override
-    public void onSend() throws JMSException {
-        super.onSend();
-
-        // lets ensure we upload the BLOB first out of band before we send the
-        // message
-        // TODO - Lets support this later.
-    }
-
-    public void deleteFile() throws IOException, JMSException {
     }
 }
