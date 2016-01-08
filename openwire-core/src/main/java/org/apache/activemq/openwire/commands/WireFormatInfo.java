@@ -27,12 +27,12 @@ import java.util.Map;
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
 import org.apache.activemq.openwire.annotations.OpenWireProperty;
 import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.buffer.Buffer;
+import org.apache.activemq.openwire.buffer.DataByteArrayInputStream;
+import org.apache.activemq.openwire.buffer.DataByteArrayOutputStream;
+import org.apache.activemq.openwire.buffer.UTF8Buffer;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
 import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
-import org.fusesource.hawtbuf.Buffer;
-import org.fusesource.hawtbuf.ByteArrayInputStream;
-import org.fusesource.hawtbuf.ByteArrayOutputStream;
-import org.fusesource.hawtbuf.UTF8Buffer;
 
 /**
  * @openwire:marshaller code="1"
@@ -151,14 +151,14 @@ public class WireFormatInfo implements Command, MarshallAware {
     }
 
     private Map<String, Object> unmarsallProperties(Buffer marshalledProperties) throws IOException {
-        return OpenWireMarshallingSupport.unmarshalPrimitiveMap(new DataInputStream(new ByteArrayInputStream(marshalledProperties)), MAX_PROPERTY_SIZE);
+        return OpenWireMarshallingSupport.unmarshalPrimitiveMap(new DataInputStream(new DataByteArrayInputStream(marshalledProperties)), MAX_PROPERTY_SIZE);
     }
 
     @Override
     public void beforeMarshall(OpenWireFormat wireFormat) throws IOException {
         // Need to marshal the properties.
         if (marshalledProperties == null && properties != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DataByteArrayOutputStream baos = new DataByteArrayOutputStream();
             DataOutputStream os = new DataOutputStream(baos);
             OpenWireMarshallingSupport.marshalPrimitiveMap(properties, os);
             os.close();

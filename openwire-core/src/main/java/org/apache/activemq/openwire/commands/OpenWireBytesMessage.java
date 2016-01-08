@@ -22,9 +22,9 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import org.apache.activemq.openwire.annotations.OpenWireType;
-import org.fusesource.hawtbuf.Buffer;
-import org.fusesource.hawtbuf.BufferEditor;
-import org.fusesource.hawtbuf.ByteArrayOutputStream;
+import org.apache.activemq.openwire.buffer.Buffer;
+import org.apache.activemq.openwire.buffer.DataByteArrayInputStream;
+import org.apache.activemq.openwire.buffer.DataByteArrayOutputStream;
 
 /**
  * Provides an abstraction layer around the standard OpenWireMessage object for
@@ -74,7 +74,7 @@ public class OpenWireBytesMessage extends OpenWireMessage {
         if (compressed) {
             return getBodyBytes().length;
         } else if (content != null) {
-            return content.length();
+            return content.getLength();
         } else {
             return 0;
         }
@@ -143,11 +143,13 @@ public class OpenWireBytesMessage extends OpenWireMessage {
     protected Buffer doDecompress() throws IOException {
         Buffer compressed = getContent();
         Inflater inflater = new Inflater();
-        ByteArrayOutputStream decompressed = new ByteArrayOutputStream();
+        DataByteArrayOutputStream decompressed = new DataByteArrayOutputStream();
         try {
-            BufferEditor editor = BufferEditor.big(compressed);
-            int length = editor.readInt();
-            compressed.offset = 0;
+            // Copy to avoid race on concurrent reads of compressed message payload.
+            compressed = new Buffer(compressed);
+            DataByteArrayInputStream compressedIn = new DataByteArrayInputStream(compressed);
+            int length = compressedIn.readInt();
+            compressedIn.close();
             byte[] data = Arrays.copyOfRange(compressed.getData(), 4, compressed.getLength());
             inflater.setInput(data);
             byte[] buffer = new byte[length];
@@ -168,7 +170,7 @@ public class OpenWireBytesMessage extends OpenWireMessage {
         Buffer bytes = getContent();
         if (bytes != null) {
             int length = bytes.getLength();
-            ByteArrayOutputStream compressed = new ByteArrayOutputStream();
+            DataByteArrayOutputStream compressed = new DataByteArrayOutputStream();
             compressed.write(new byte[4]);
             Deflater deflater = new Deflater();
             try {
@@ -180,11 +182,8 @@ public class OpenWireBytesMessage extends OpenWireMessage {
                     compressed.write(buffer, 0, count);
                 }
 
-                bytes = compressed.toBuffer();
-                bytes.bigEndianEditor().writeInt(length);
-                bytes.offset = 0;
-                bytes.length += 4;
-                setContent(bytes);
+                compressed.writeInt(0, length);
+                setContent(compressed.toBuffer());
             } finally {
                 deflater.end();
                 compressed.close();

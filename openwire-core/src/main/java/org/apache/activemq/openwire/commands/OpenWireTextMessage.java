@@ -24,12 +24,12 @@ import java.io.OutputStream;
 
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
 import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.buffer.Buffer;
+import org.apache.activemq.openwire.buffer.DataByteArrayInputStream;
+import org.apache.activemq.openwire.buffer.DataByteArrayOutputStream;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
 import org.apache.activemq.openwire.utils.IOExceptionSupport;
 import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
-import org.fusesource.hawtbuf.Buffer;
-import org.fusesource.hawtbuf.ByteArrayInputStream;
-import org.fusesource.hawtbuf.ByteArrayOutputStream;
 
 @OpenWireType(typeCode = 28)
 public class OpenWireTextMessage extends OpenWireMessage {
@@ -79,7 +79,7 @@ public class OpenWireTextMessage extends OpenWireMessage {
         if (hasContent()) {
             InputStream is = null;
             try {
-                is = new ByteArrayInputStream(getPayload());
+                is = new DataByteArrayInputStream(getPayload());
                 DataInputStream dataIn = new DataInputStream(is);
                 text = OpenWireMarshallingSupport.readUTF8(dataIn);
                 dataIn.close();
@@ -115,7 +115,7 @@ public class OpenWireTextMessage extends OpenWireMessage {
         try {
             Buffer content = getContent();
             if (content == null && text != null) {
-                ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+                DataByteArrayOutputStream bytesOut = new DataByteArrayOutputStream();
                 OutputStream os = bytesOut;
                 DataOutputStream dataOut = new DataOutputStream(os);
                 OpenWireMarshallingSupport.writeUTF8(dataOut, this.text);

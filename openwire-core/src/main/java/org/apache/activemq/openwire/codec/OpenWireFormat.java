@@ -23,12 +23,12 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.activemq.openwire.buffer.Buffer;
+import org.apache.activemq.openwire.buffer.DataByteArrayInputStream;
+import org.apache.activemq.openwire.buffer.DataByteArrayOutputStream;
 import org.apache.activemq.openwire.commands.CommandTypes;
 import org.apache.activemq.openwire.commands.DataStructure;
 import org.apache.activemq.openwire.commands.WireFormatInfo;
-import org.fusesource.hawtbuf.Buffer;
-import org.fusesource.hawtbuf.DataByteArrayInputStream;
-import org.fusesource.hawtbuf.DataByteArrayOutputStream;
 
 /**
  * The OpenWire Protocol Encoder and Decoder implementation.
@@ -146,16 +146,13 @@ public final class OpenWireFormat {
                 }
                 bytesOut.writeByte(type);
                 dsm.looseMarshal(this, c, bytesOut);
-                sequence = bytesOut.toBuffer();
 
                 if (!sizePrefixDisabled) {
-                    size = sequence.getLength() - 4;
-                    int length = sequence.length;
-                    int offset = sequence.offset;
-                    sequence.bigEndianEditor().writeInt(size);
-                    sequence.length = length;
-                    sequence.offset = offset;
+                    size = bytesOut.size() - 4;
+                    bytesOut.writeInt(0, size);
                 }
+
+                sequence = bytesOut.toBuffer();
             }
         } else {
             bytesOut.restart(5);

@@ -31,13 +31,13 @@ import java.util.zip.InflaterInputStream;
 
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
 import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.buffer.Buffer;
+import org.apache.activemq.openwire.buffer.DataByteArrayInputStream;
+import org.apache.activemq.openwire.buffer.DataByteArrayOutputStream;
+import org.apache.activemq.openwire.buffer.UTF8Buffer;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
 import org.apache.activemq.openwire.utils.IOExceptionSupport;
 import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
-import org.fusesource.hawtbuf.Buffer;
-import org.fusesource.hawtbuf.ByteArrayInputStream;
-import org.fusesource.hawtbuf.ByteArrayOutputStream;
-import org.fusesource.hawtbuf.UTF8Buffer;
 
 /**
  * openwire:marshaller code="25"
@@ -92,7 +92,7 @@ public class OpenWireMapMessage extends OpenWireMessage {
     public void storeContent() {
         try {
             if (getContent() == null && !map.isEmpty()) {
-                ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+                DataByteArrayOutputStream bytesOut = new DataByteArrayOutputStream();
                 OutputStream os = bytesOut;
                 if (isUseCompression()) {
                     compressed = true;
@@ -117,7 +117,7 @@ public class OpenWireMapMessage extends OpenWireMessage {
         try {
             if (getContent() != null && map.isEmpty()) {
                 Buffer content = getContent();
-                InputStream is = new ByteArrayInputStream(content);
+                InputStream is = new DataByteArrayInputStream(content);
                 if (isCompressed()) {
                     is = new InflaterInputStream(is);
                 }

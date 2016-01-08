@@ -26,8 +26,8 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.activemq.openwire.buffer.Buffer;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
-import org.fusesource.hawtbuf.Buffer;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;

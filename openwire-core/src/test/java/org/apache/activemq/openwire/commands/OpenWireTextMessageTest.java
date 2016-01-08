@@ -20,17 +20,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 
+import org.apache.activemq.openwire.buffer.Buffer;
+import org.apache.activemq.openwire.buffer.DataByteArrayOutputStream;
 import org.apache.activemq.openwire.utils.MarshallingSupport;
-import org.fusesource.hawtbuf.Buffer;
-import org.fusesource.hawtbuf.ByteArrayOutputStream;
 import org.junit.Test;
 
-/**
- *
- */
 public class OpenWireTextMessageTest {
 
     @Test
@@ -108,10 +104,9 @@ public class OpenWireTextMessageTest {
     }
 
     void setContent(Message message, String text) throws Exception {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DataOutputStream dataOut = new DataOutputStream(baos);
-        MarshallingSupport.writeUTF8(dataOut, text);
-        dataOut.close();
+        DataByteArrayOutputStream baos = new DataByteArrayOutputStream();
+        MarshallingSupport.writeUTF8(baos, text);
+        baos.close();
         message.setContent(baos.toBuffer());
     }
 }

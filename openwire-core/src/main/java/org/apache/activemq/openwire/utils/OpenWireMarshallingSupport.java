@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.fusesource.hawtbuf.DataByteArrayInputStream;
-import org.fusesource.hawtbuf.DataByteArrayOutputStream;
-import org.fusesource.hawtbuf.UTF8Buffer;
+import org.apache.activemq.openwire.buffer.DataByteArrayInputStream;
+import org.apache.activemq.openwire.buffer.DataByteArrayOutputStream;
+import org.apache.activemq.openwire.buffer.UTF8Buffer;
 
 /**
  * The fixed version of the UTF8 encoding function. Some older JVM's UTF8

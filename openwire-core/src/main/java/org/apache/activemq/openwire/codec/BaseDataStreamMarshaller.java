@@ -21,8 +21,8 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 
+import org.apache.activemq.openwire.buffer.Buffer;
 import org.apache.activemq.openwire.commands.DataStructure;
-import org.fusesource.hawtbuf.Buffer;
 
 /**
  * Root of all OpenWire marshalers.

@@ -21,9 +21,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.DataInputStream;
 
-import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
-import org.fusesource.hawtbuf.DataByteArrayInputStream;
-import org.fusesource.hawtbuf.DataByteArrayOutputStream;
+import org.apache.activemq.openwire.buffer.DataByteArrayInputStream;
+import org.apache.activemq.openwire.buffer.DataByteArrayOutputStream;
 import org.junit.Test;
 
 public class OpenWireMarshallingSupportTest {

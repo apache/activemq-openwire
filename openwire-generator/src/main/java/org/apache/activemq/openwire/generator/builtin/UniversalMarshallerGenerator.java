@@ -101,9 +101,10 @@ public class UniversalMarshallerGenerator extends AbstractGenerator {
             final Class<?> type = property.getType();
             if (type.getCanonicalName().startsWith("java.util")) {
                 languageTypes.add(type.getCanonicalName());
-            } else if (type.getCanonicalName().startsWith("org.fusesource.")) {
-                languageTypes.add(type.getCanonicalName());
             }
+//            } else if (type.getCanonicalName().startsWith("org.fusesource.")) {
+//                languageTypes.add(type.getCanonicalName());
+//            }
         }
 
         for (String languageType : languageTypes) {

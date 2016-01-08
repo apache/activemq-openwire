@@ -18,6 +18,7 @@ package org.apache.activemq.openwire.commands;
 
 import static org.apache.activemq.openwire.codec.OpenWireConstants.ADIVSORY_MESSAGE_TYPE;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -31,13 +32,13 @@ import java.util.zip.InflaterInputStream;
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
 import org.apache.activemq.openwire.annotations.OpenWireProperty;
 import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.buffer.Buffer;
+import org.apache.activemq.openwire.buffer.DataByteArrayInputStream;
+import org.apache.activemq.openwire.buffer.DataByteArrayOutputStream;
+import org.apache.activemq.openwire.buffer.UTF8Buffer;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
 import org.apache.activemq.openwire.utils.IOExceptionSupport;
 import org.apache.activemq.openwire.utils.OpenWireMarshallingSupport;
-import org.fusesource.hawtbuf.Buffer;
-import org.fusesource.hawtbuf.ByteArrayInputStream;
-import org.fusesource.hawtbuf.ByteArrayOutputStream;
-import org.fusesource.hawtbuf.UTF8Buffer;
 
 /**
  * Represents an ActiveMQ message
@@ -265,14 +266,14 @@ public abstract class Message extends BaseCommand implements MarshallAware {
     }
 
     private Map<String, Object> unmarsallProperties(Buffer marshalledProperties) throws IOException {
-        return OpenWireMarshallingSupport.unmarshalPrimitiveMap(new DataInputStream(new ByteArrayInputStream(marshalledProperties)));
+        return OpenWireMarshallingSupport.unmarshalPrimitiveMap(new DataInputStream(new DataByteArrayInputStream(marshalledProperties)));
     }
 
     @Override
     public void beforeMarshall(OpenWireFormat wireFormat) throws IOException {
         // Need to marshal the properties.
         if (marshalledProperties == null && properties != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DataByteArrayOutputStream baos = new DataByteArrayOutputStream();
             DataOutputStream os = new DataOutputStream(baos);
             OpenWireMarshallingSupport.marshalPrimitiveMap(properties, os);
             os.close();
@@ -741,10 +742,13 @@ public abstract class Message extends BaseCommand implements MarshallAware {
     }
 
     protected Buffer doDecompress() throws IOException {
+
+        // TODO
+
         ByteArrayInputStream input = new ByteArrayInputStream(this.content.getData(), this.content.getOffset(), this.content.getLength());
         InflaterInputStream inflater = new InflaterInputStream(input);
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        DataByteArrayOutputStream output = new DataByteArrayOutputStream();
         try {
             byte[] buffer = new byte[8*1024];
             int read = 0;
@@ -762,7 +766,7 @@ public abstract class Message extends BaseCommand implements MarshallAware {
     protected void doCompress() throws IOException {
         compressed = true;
         Buffer bytes = getContent();
-        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+        DataByteArrayOutputStream bytesOut = new DataByteArrayOutputStream();
         OutputStream os = new DeflaterOutputStream(bytesOut);
         os.write(bytes.data, bytes.offset, bytes.length);
         os.close();

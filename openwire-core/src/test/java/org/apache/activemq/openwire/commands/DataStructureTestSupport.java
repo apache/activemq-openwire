@@ -25,9 +25,8 @@ import java.util.Arrays;
 
 import junit.framework.AssertionFailedError;
 
+import org.apache.activemq.openwire.buffer.Buffer;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
-import org.apache.activemq.openwire.commands.Command;
-import org.fusesource.hawtbuf.Buffer;
 import org.junit.Before;
 
 public abstract class DataStructureTestSupport {

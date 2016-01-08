@@ -26,15 +26,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.activemq.openwire.commands.CommandTypes;
-import org.apache.activemq.openwire.commands.OpenWireStreamMessage;
-import org.fusesource.hawtbuf.Buffer;
+import org.apache.activemq.openwire.buffer.Buffer;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- */
 public class OpenWireStreamMessageTest {
 
     private final List<Object> elements = new ArrayList<Object>();
@@ -88,7 +83,7 @@ public class OpenWireStreamMessageTest {
         Buffer rawContent = message.getContent();
         Buffer processedContent = message.getPayload();
 
-        assertTrue(rawContent.length() < processedContent.length());
+        assertTrue(rawContent.getLength() < processedContent.getLength());
     }
 
     @Test

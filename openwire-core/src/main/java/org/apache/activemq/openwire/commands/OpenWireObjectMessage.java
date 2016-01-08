@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.activemq.openwire.commands;
 
 import java.io.DataInputStream;
@@ -29,12 +28,12 @@ import java.util.zip.InflaterInputStream;
 
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
 import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.buffer.Buffer;
+import org.apache.activemq.openwire.buffer.DataByteArrayInputStream;
+import org.apache.activemq.openwire.buffer.DataByteArrayOutputStream;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
 import org.apache.activemq.openwire.utils.IOExceptionSupport;
 import org.apache.activemq.openwire.utils.ObjectMessageInputStream;
-import org.fusesource.hawtbuf.Buffer;
-import org.fusesource.hawtbuf.ByteArrayInputStream;
-import org.fusesource.hawtbuf.ByteArrayOutputStream;
 
 /**
  * openwire:marshaller code="26"
@@ -72,7 +71,7 @@ public class OpenWireObjectMessage extends OpenWireMessage {
         Buffer bodyAsBytes = getContent();
         if (bodyAsBytes == null && object != null) {
             try {
-                ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+                DataByteArrayOutputStream bytesOut = new DataByteArrayOutputStream();
                 OutputStream os = bytesOut;
                 if (isUseCompression()) {
                     compressed = true;
@@ -148,7 +147,7 @@ public class OpenWireObjectMessage extends OpenWireMessage {
         if (object == null && getContent() != null) {
             try {
                 Buffer content = getContent();
-                InputStream is = new ByteArrayInputStream(content);
+                InputStream is = new DataByteArrayInputStream(content);
                 if (isCompressed()) {
                     is = new InflaterInputStream(is);
                 }

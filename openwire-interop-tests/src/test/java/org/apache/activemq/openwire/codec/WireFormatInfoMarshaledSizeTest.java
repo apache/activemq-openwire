@@ -25,11 +25,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import org.apache.activemq.openwire.codec.OpenWireFormat;
-import org.apache.activemq.openwire.codec.OpenWireFormatFactory;
+import org.apache.activemq.openwire.buffer.Buffer;
 import org.apache.activemq.openwire.commands.WireFormatInfo;
 import org.apache.activemq.util.ByteSequence;
-import org.fusesource.hawtbuf.Buffer;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;

@@ -25,9 +25,9 @@ import java.util.Vector;
 
 import org.apache.activemq.openwire.annotations.OpenWireExtension;
 import org.apache.activemq.openwire.annotations.OpenWireType;
+import org.apache.activemq.openwire.buffer.Buffer;
+import org.apache.activemq.openwire.buffer.UTF8Buffer;
 import org.apache.activemq.openwire.utils.IOExceptionSupport;
-import org.fusesource.hawtbuf.Buffer;
-import org.fusesource.hawtbuf.UTF8Buffer;
 
 /**
  * Base implementation of a JMS Message object.

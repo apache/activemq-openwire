@@ -16,7 +16,6 @@
  */
 package org.apache.activemq.openwire.codec.universal;
 
-import org.fusesource.hawtbuf.Buffer;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
