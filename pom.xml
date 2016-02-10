@@ -110,7 +110,7 @@
     <module>openwire-core</module>
     <module>openwire-legacy</module>
     <module>openwire-interop-tests</module>
-    <module>openwire-website</module>
+<!--     <module>openwire-website</module>  -->
     <module>openwire-annotations</module>
   </modules>
 
