@@ -38,7 +38,7 @@
     <target-version>1.7</target-version>
 
     <!-- Dependency Versions for this Project -->
-    <ant-version>1.9.6</ant-version>
+    <ant-version>1.10.11</ant-version>
     <junit-version>4.12</junit-version>
     <slf4j-version>1.7.13</slf4j-version>
     <activemq-version>5.12.1</activemq-version>
