@@ -26,7 +26,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 

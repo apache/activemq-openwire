@@ -32,7 +32,6 @@ import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 
-import com.google.common.base.Predicates;
 
 /**
  * Collection of useful methods when generating OpenWire types.
@@ -95,10 +94,9 @@ public class GeneratorUtils {
 
         if (property.getType().equals(boolean.class)) {
             Set<Method> getters = getAllMethods(openWireType,
-                Predicates.and(
-                        withModifier(Modifier.PUBLIC),
-                        withPrefix("is"),
-                        withParametersCount(0)));
+                 withModifier(Modifier.PUBLIC)
+                     .and(withPrefix("is"))
+                     .and(withParametersCount(0)));
 
             // Found an isX method, use that.
             if (!getters.isEmpty()) {
@@ -111,10 +109,9 @@ public class GeneratorUtils {
         }
 
         Set<Method> getters = getAllMethods(openWireType,
-            Predicates.and(
-                    withModifier(Modifier.PUBLIC),
-                    withPrefix("get"),
-                    withParametersCount(0)));
+                    withModifier(Modifier.PUBLIC)
+                        .and(withPrefix("get"))
+                        .and(withParametersCount(0)));
 
         // Found an getX method, use that.
         if (!getters.isEmpty()) {
@@ -145,10 +142,9 @@ public class GeneratorUtils {
     public static Method findSetMethodForProperty(Class<?> openWireType, OpenWirePropertyDescriptor property) throws Exception {
 
         Set<Method> setters = getAllMethods(openWireType,
-            Predicates.and(
-                    withModifier(Modifier.PUBLIC),
-                    withPrefix("set"),
-                    withParametersCount(1)));
+                    withModifier(Modifier.PUBLIC)
+                        .and(withPrefix("set"))
+                        .and(withParametersCount(1)));
 
         // Found an getX method, use that.
         if (!setters.isEmpty()) {
