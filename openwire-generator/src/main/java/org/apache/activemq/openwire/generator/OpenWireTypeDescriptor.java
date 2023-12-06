@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,11 +41,19 @@ public class OpenWireTypeDescriptor {
 
         List<OpenWirePropertyDescriptor> properties = new ArrayList<OpenWirePropertyDescriptor>();
 
+        Set<Integer> sequenceNumbers = new HashSet<>();
         Set<Field> fields = GeneratorUtils.finalOpenWireProperties(openWireType);
         for (Field field : fields) {
             // Only track fields from the given type and not its super types.
             if (field.getDeclaringClass().equals(openWireType)) {
-                properties.add(new OpenWirePropertyDescriptor(openWireType, field));
+                OpenWirePropertyDescriptor descriptor = new OpenWirePropertyDescriptor(openWireType, field);
+                if (sequenceNumbers.add(descriptor.getMarshalingSequence())) {
+                    properties.add(descriptor);
+                } else {
+                    throw new IllegalArgumentException("Property: '" + descriptor.getPropertyName() +
+                        "' on OpenWireType: '" + field.getDeclaringClass() + "' has sequence '"
+                        + descriptor.getMarshalingSequence() + "' which was already used on an existing property.");
+                }
             }
         }
 

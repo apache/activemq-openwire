@@ -35,7 +35,7 @@ public class ProducerAck extends BaseCommand {
     @OpenWireProperty(version = 3, sequence = 1)
     protected ProducerId producerId;
 
-    @OpenWireProperty(version = 3, sequence = 1)
+    @OpenWireProperty(version = 3, sequence = 2)
     protected int size;
 
     public ProducerAck() {
