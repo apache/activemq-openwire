@@ -33,7 +33,7 @@ public class PartialCommand implements Command {
     @OpenWireProperty(version = 1, sequence = 1)
     private int commandId;
 
-    @OpenWireProperty(version = 1, sequence = 1, mandatory = true)
+    @OpenWireProperty(version = 1, sequence = 2, mandatory = true)
     private byte[] data;
 
     public PartialCommand() {

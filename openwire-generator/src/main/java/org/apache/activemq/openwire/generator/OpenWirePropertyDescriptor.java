@@ -38,7 +38,7 @@ public class OpenWirePropertyDescriptor implements Comparable<OpenWirePropertyDe
     private final String getterName;
     private final String setterName;
 
-    public OpenWirePropertyDescriptor(Class<?> openWireType, Field openWireProperty) throws Exception {
+    public OpenWirePropertyDescriptor(Class<?> openWireType, Field openWireProperty) {
         this.openWireType = openWireType;
         this.openWireProperty = openWireProperty;
         this.propertyAnnotation = openWireProperty.getAnnotation(OpenWireProperty.class);

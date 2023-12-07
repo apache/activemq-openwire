@@ -68,7 +68,7 @@ public class GeneratorUtils {
      *
      * @throws Exception if an error occurs while scanning for properties.
      */
-    public static Set<Field> finalOpenWireProperties(Class<?> openWireType) throws Exception {
+    public static Set<Field> finalOpenWireProperties(Class<?> openWireType) {
         @SuppressWarnings("unchecked")
         final Set<Field> properties =
             ReflectionUtils.getAllFields(openWireType, ReflectionUtils.withAnnotation(OpenWireProperty.class));
@@ -90,7 +90,7 @@ public class GeneratorUtils {
      * @throws Exception if an error occurs finding the get method.
      */
     @SuppressWarnings("unchecked")
-    public static Method findGetMethodForProperty(Class<?> openWireType, OpenWirePropertyDescriptor property) throws Exception {
+    public static Method findGetMethodForProperty(Class<?> openWireType, OpenWirePropertyDescriptor property) {
 
         if (property.getType().equals(boolean.class)) {
             Set<Method> getters = getAllMethods(openWireType,
@@ -139,7 +139,7 @@ public class GeneratorUtils {
      * @throws Exception if an error occurs finding the set method.
      */
     @SuppressWarnings("unchecked")
-    public static Method findSetMethodForProperty(Class<?> openWireType, OpenWirePropertyDescriptor property) throws Exception {
+    public static Method findSetMethodForProperty(Class<?> openWireType, OpenWirePropertyDescriptor property) {
 
         Set<Method> setters = getAllMethods(openWireType,
                     withModifier(Modifier.PUBLIC)
@@ -170,7 +170,7 @@ public class GeneratorUtils {
      *
      * @throws Exception if an error occurs.
      */
-    public static File createDestination(String base, String targetPackage) throws Exception {
+    public static File createDestination(String base, String targetPackage) {
         targetPackage = targetPackage.replace(".", File.separator);
 
         final File outputFolder = new File(base, targetPackage);
