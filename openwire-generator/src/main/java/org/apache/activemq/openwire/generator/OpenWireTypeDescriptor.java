@@ -19,11 +19,12 @@ package org.apache.activemq.openwire.generator;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.activemq.openwire.annotations.OpenWireType;
 
 /**
@@ -35,32 +36,18 @@ public class OpenWireTypeDescriptor {
     private final OpenWireType typeAnnotation;
     private final List<OpenWirePropertyDescriptor> properties;
 
-    public OpenWireTypeDescriptor(Class<?> openWireType) throws Exception {
+    public OpenWireTypeDescriptor(Class<?> openWireType) {
         this.openWireType = openWireType;
-        this.typeAnnotation = openWireType.getAnnotation(OpenWireType.class);
-
-        List<OpenWirePropertyDescriptor> properties = new ArrayList<OpenWirePropertyDescriptor>();
-
-        Set<Integer> sequenceNumbers = new HashSet<>();
-        Set<Field> fields = GeneratorUtils.finalOpenWireProperties(openWireType);
-        for (Field field : fields) {
+        this.typeAnnotation = Optional.ofNullable(openWireType.getAnnotation(OpenWireType.class))
+            .orElseThrow(() -> new IllegalArgumentException(openWireType + " is missing required OpenWireType annotation."));
+        this.properties = GeneratorUtils.finalOpenWireProperties(openWireType)
             // Only track fields from the given type and not its super types.
-            if (field.getDeclaringClass().equals(openWireType)) {
-                OpenWirePropertyDescriptor descriptor = new OpenWirePropertyDescriptor(openWireType, field);
-                if (sequenceNumbers.add(descriptor.getMarshalingSequence())) {
-                    properties.add(descriptor);
-                } else {
-                    throw new IllegalArgumentException("Property: '" + descriptor.getPropertyName() +
-                        "' on OpenWireType: '" + field.getDeclaringClass() + "' has sequence '"
-                        + descriptor.getMarshalingSequence() + "' which was already used on an existing property.");
-                }
-            }
-        }
+            .stream().filter(field -> field.getDeclaringClass().equals(openWireType))
+            .map(field -> new OpenWirePropertyDescriptor(openWireType, field))
+            .sorted().toList();
 
-        // Ensure ordering my marshaler sequence.
-        Collections.sort(properties);
-
-        this.properties = Collections.unmodifiableList(properties);
+        // Make sure all sequence numbers seen are correct
+        validateSequenceNumbers();
     }
 
     /**
@@ -130,4 +117,26 @@ public class OpenWireTypeDescriptor {
     public List<OpenWirePropertyDescriptor> getProperties() {
         return properties;
     }
+
+    private void validateSequenceNumbers() {
+        int expected = 1;
+        for (OpenWirePropertyDescriptor desc : properties) {
+            if (desc.getMarshalingSequence() < 1) {
+                sequenceError(desc, expected, "Sequence number must be positive");
+            } else if (desc.getMarshalingSequence() < expected) {
+                sequenceError(desc, expected, "Sequence numbers must not be duplicated");
+            } else if (expected != desc.getMarshalingSequence()) {
+                sequenceError(desc, expected, "Sequence numbers must be contiguous");
+            }
+            expected++;
+        }
+    }
+
+    private String sequenceError(OpenWirePropertyDescriptor descriptor, int expected, String error) {
+        throw new IllegalArgumentException("Property: '" + descriptor.getPropertyName()
+            + "' on OpenWireType: '" + openWireType + "' has invalid sequence number '"
+            + descriptor.getMarshalingSequence() + "'. Error: " + error
+            + ". Expected sequence number is: '" + expected + "'.");
+    }
+
 }
