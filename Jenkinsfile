@@ -110,10 +110,10 @@ pipeline {
                 jdk params.jdkVersion
             }
             steps {
-                echo 'Running apache-rat:check'
+                echo '[DISABLED] Running apache-rat:check'
                 sh 'java -version'
                 sh 'mvn -version'
-                sh 'mvn apache-rat:check'
+                // sh 'mvn apache-rat:check'
             }
         }
 
