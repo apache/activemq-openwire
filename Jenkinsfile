@@ -125,8 +125,6 @@ pipeline {
                 echo 'Running tests'
                 sh 'java -version'
                 sh 'mvn -version'
-                // all tests is very very long (10 hours on Apache Jenkins)
-                // sh 'mvn -B -e test -pl activemq-unit-tests -Dactivemq.tests=all'
                 sh 'mvn -B -e -fae test -Dsurefire.rerunFailingTestsCount=3'
             }
             post {
