@@ -20,13 +20,6 @@ import org.apache.activemq.openwire.codec.OpenWireInteropTests;
 
 public class OpenWireV9Test extends OpenWireInteropTests {
 
-    /**
-     * @param tightEncodingEnabled
-     */
-    public OpenWireV9Test(boolean tightEncodingEnabled) {
-        super(tightEncodingEnabled);
-    }
-
     @Override
     protected int getOpenWireVersion() {
         return 9;

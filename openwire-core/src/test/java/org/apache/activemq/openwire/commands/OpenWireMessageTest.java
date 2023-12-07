@@ -16,20 +16,20 @@
  */
 package org.apache.activemq.openwire.commands;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.Map;
 
 import org.apache.activemq.openwire.buffer.Buffer;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ public class OpenWireMessageTest {
     private long jmsTimestamp;
     private long[] consumerIDs;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.myMessageID = new MessageId("ID:TEST-ID:0:0:0:1");
         this.jmsCorrelationID = "testcorrelationid";
@@ -428,7 +428,7 @@ public class OpenWireMessageTest {
         OpenWireMessage msg = new OpenWireMessage();
         msg.setRedeliveryCounter(1);
         int count = msg.getRedeliveryCounter();
-        assertTrue("expected delivery count = 1 - got: " + count, count == 1);
+        assertTrue(count == 1, "expected delivery count = 1 - got: " + count);
     }
 
     @Test

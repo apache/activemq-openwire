@@ -16,8 +16,8 @@
  */
 package org.apache.activemq.openwire.codec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,12 +25,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.apache.activemq.openwire.codec.OpenWireFormat;
 import org.apache.activemq.openwire.commands.CommandTypes;
 import org.apache.activemq.openwire.commands.OpenWireTextMessage;
 import org.apache.activemq.openwire.commands.SessionId;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,12 +79,12 @@ public class NumberRangesWhileMarshallingTest {
             LOG.info("Unmarshaling value: " + i + " = " + expected);
 
             SessionId command = (SessionId) openWireformat.unmarshal(dis);
-            assertEquals("connection ID in object: " + i, connectionId, command.getConnectionId());
+            assertEquals(connectionId, command.getConnectionId(), "connection ID in object: " + i);
             String actual = Long.toHexString(command.getValue());
-            assertEquals("value of object: " + i + " was: " + actual, expected, actual);
+            assertEquals(expected, actual, "value of object: " + i + " was: " + actual);
         }
         int marker = dis.readInt();
-        assertEquals("Marker int", Integer.toHexString(endOfStreamMarker), Integer.toHexString(marker));
+        assertEquals(Integer.toHexString(endOfStreamMarker), Integer.toHexString(marker), "Marker int");
 
         // lets try read and we should get an exception
         try {
@@ -127,7 +126,7 @@ public class NumberRangesWhileMarshallingTest {
         assertEquals(Long.MAX_VALUE, wf.getMaxFrameSize());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         openWireformat = createOpenWireFormat();
     }

@@ -16,12 +16,10 @@
  */
 package org.apache.activemq.openwire.commands;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.activemq.openwire.commands.CommandTypes;
-import org.apache.activemq.openwire.commands.OpenWireBytesMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class OpenWireBytesMessageTest {
 

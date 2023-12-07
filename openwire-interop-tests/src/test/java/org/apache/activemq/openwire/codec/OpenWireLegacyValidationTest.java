@@ -18,30 +18,30 @@ package org.apache.activemq.openwire.codec;
 
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test that Openwire marshalling for legacy versions will validate Throwable types during
  * unmarshalling commands that contain a Throwable
  */
-@RunWith(Parameterized.class)
 public class OpenWireLegacyValidationTest extends OpenWireUniversalValidationTest {
-    private final int version;
+    private int version;
 
     // Run through version 1 - 12 which are legacy
     // Newly generated will be universal and convered by the parent test
-    @Parameters(name = "version={0}")
-    public static Collection<Object[]> data() {
-        List<Object[]> versions = new ArrayList<>();
-        for (int i = 1; i <= 11; i++) {
-            versions.add(new Object[]{i});
-        }
-        return versions;
+    
+    public static Stream<Integer> versions() {
+        return Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11).stream();
+    }
+
+    @AfterEach
+    public void afterEach() {
+        this.version = Integer.MIN_VALUE;
     }
 
     @Override
@@ -54,8 +54,11 @@ public class OpenWireLegacyValidationTest extends OpenWireUniversalValidationTes
         return version;
     }
 
-    public OpenWireLegacyValidationTest(int version) {
+    @ParameterizedTest
+    @MethodSource("versions")
+    public void testOpenwireThrowableValidation(int version) throws Exception {
         this.version = version;
+        super.testOpenwireThrowableValidation();
     }
 
     protected Class<?> getMarshallerFactory() throws ClassNotFoundException {

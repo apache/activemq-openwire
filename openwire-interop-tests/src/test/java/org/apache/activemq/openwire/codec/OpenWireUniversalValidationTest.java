@@ -16,10 +16,9 @@
  */
 package org.apache.activemq.openwire.codec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.DataOutput;
 import java.io.IOException;
@@ -29,8 +28,8 @@ import org.apache.activemq.openwire.buffer.Buffer;
 import org.apache.activemq.openwire.codec.universal.MarshallerFactory;
 import org.apache.activemq.openwire.commands.CommandTypes;
 import org.apache.activemq.openwire.commands.ExceptionResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test that Openwire marshalling will validate Throwable types during
@@ -40,7 +39,7 @@ public class OpenWireUniversalValidationTest {
 
     private static final AtomicBoolean initialized = new AtomicBoolean(false);
 
-    @Before
+    @BeforeEach
     public void before() {
         initialized.set(false);
     }
