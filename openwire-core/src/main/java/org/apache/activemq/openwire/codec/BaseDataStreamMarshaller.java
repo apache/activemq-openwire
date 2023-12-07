@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 
 import org.apache.activemq.openwire.buffer.Buffer;
 import org.apache.activemq.openwire.commands.DataStructure;
+import org.apache.activemq.openwire.utils.OpenWireValidationSupport;
 
 /**
  * Root of all OpenWire marshalers.
@@ -219,8 +220,11 @@ public abstract class BaseDataStreamMarshaller implements DataStreamMarshaller {
     private Throwable createThrowable(String className, String message) {
         try {
             Class<?> clazz = Class.forName(className, false, BaseDataStreamMarshaller.class.getClassLoader());
-            Constructor<?> constructor = clazz.getConstructor(new Class[] { String.class });
+            OpenWireValidationSupport.validateIsThrowable(clazz);
+            Constructor<?> constructor = clazz.getConstructor(String.class);
             return (Throwable) constructor.newInstance(new Object[] { message });
+        } catch (IllegalArgumentException e) {
+            return e;
         } catch (Throwable e) {
             return new Throwable(className + ": " + message);
         }
