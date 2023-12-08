@@ -16,35 +16,20 @@
  */
 package org.apache.activemq.openwire.commands;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 
-import org.apache.activemq.openwire.commands.MessageId;
-import org.apache.activemq.openwire.commands.OpenWireMessage;
-import org.apache.activemq.openwire.commands.OpenWireQueue;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-@RunWith(value = Parameterized.class)
+
 public class MessageTest extends DataStructureTestSupport {
 
-    public MessageTest(Boolean cacheEnabled) {
-        this.cacheEnabled = cacheEnabled;
-    }
-
-    @Parameters
-    public static Collection<Object[]> data() {
-      Object[][] data = new Object[][] { { Boolean.TRUE }, { Boolean.FALSE } };
-      return Arrays.asList(data);
-    }
-
-    @Test
-    public void testOpenWireMessageMarshaling() throws IOException {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void testOpenWireMessageMarshaling(boolean cacheEnabled) throws IOException {
+        createWireFormat(cacheEnabled);
         OpenWireMessage message = new OpenWireMessage();
         message.setCommandId((short)1);
         message.setOriginalDestination(new OpenWireQueue("queue"));
@@ -55,8 +40,10 @@ public class MessageTest extends DataStructureTestSupport {
         assertBeanMarshalls(message);
     }
 
-    @Test
-    public void testOpenWireMessageMarshalingBigMessageId() throws IOException {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void testOpenWireMessageMarshalingBigMessageId(boolean cacheEnabled) throws IOException {
+        createWireFormat(cacheEnabled);
         OpenWireMessage message = new OpenWireMessage();
         message.setCommandId((short)1);
         message.setOriginalDestination(new OpenWireQueue("queue"));
@@ -67,8 +54,10 @@ public class MessageTest extends DataStructureTestSupport {
         assertBeanMarshalls(message);
     }
 
-    @Test
-    public void testOpenWireMessageMarshalingBiggerMessageId() throws IOException {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void testOpenWireMessageMarshalingBiggerMessageId(boolean cacheEnabled) throws IOException {
+        createWireFormat(cacheEnabled);
         OpenWireMessage message = new OpenWireMessage();
         message.setCommandId((short)1);
         message.setOriginalDestination(new OpenWireQueue("queue"));
@@ -79,8 +68,10 @@ public class MessageTest extends DataStructureTestSupport {
         assertBeanMarshalls(message);
     }
 
-    @Test
-    public void testOpenWireMessageMarshalingBiggestMessageId() throws IOException {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void testOpenWireMessageMarshalingBiggestMessageId(boolean cacheEnabled) throws IOException {
+        createWireFormat(cacheEnabled);
         OpenWireMessage message = new OpenWireMessage();
         message.setCommandId((short)1);
         message.setOriginalDestination(new OpenWireQueue("queue"));
@@ -91,13 +82,17 @@ public class MessageTest extends DataStructureTestSupport {
         assertBeanMarshalls(message);
     }
 
-    @Test
-    public void testMessageIdMarshaling() throws IOException {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void testMessageIdMarshaling(boolean cacheEnabled) throws IOException {
+        createWireFormat(cacheEnabled);
         assertBeanMarshalls(new MessageId("c1:1:1", 1));
     }
 
-    @Test
-    public void testPropRemove() throws Exception {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void testPropRemove(boolean cacheEnabled) throws Exception {
+        createWireFormat(cacheEnabled);
         OpenWireMessage message = new OpenWireMessage();
         message.setProperty("RM","RM");
 
@@ -107,6 +102,6 @@ public class MessageTest extends DataStructureTestSupport {
         unMarshalled.removeProperty("RM");
 
         OpenWireMessage unMarshalledAgain = (OpenWireMessage) marshalAndUnmarshall(unMarshalled, wireFormat);
-        assertNull("Prop is gone", unMarshalledAgain.getProperty("RM"));
+        assertNull(unMarshalledAgain.getProperty("RM"), "Prop is gone");
     }
 }

@@ -16,9 +16,10 @@
  */
 package org.apache.activemq.openwire.commands;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test various usages of the OpenWireDestination and its subclasses.
@@ -43,7 +44,7 @@ public class OpenWireDestinationTest {
         List<OpenWireDestination> expected = Arrays.asList(destinations);
         set.addAll(expected);
         List<OpenWireDestination> actual = new ArrayList<OpenWireDestination>(set);
-        assertEquals("Sorted order", expected, actual);
+        assertIterableEquals(expected, actual, "Sorted order");
     }
 
     class CombyDest {

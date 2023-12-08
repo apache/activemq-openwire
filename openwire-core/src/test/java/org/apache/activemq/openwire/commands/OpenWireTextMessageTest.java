@@ -16,16 +16,16 @@
  */
 package org.apache.activemq.openwire.commands;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
 import org.apache.activemq.openwire.buffer.Buffer;
 import org.apache.activemq.openwire.buffer.DataByteArrayOutputStream;
 import org.apache.activemq.openwire.utils.MarshallingSupport;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class OpenWireTextMessageTest {
 

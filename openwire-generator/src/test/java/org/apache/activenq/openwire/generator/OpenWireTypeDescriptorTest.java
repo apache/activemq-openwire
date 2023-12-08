@@ -16,13 +16,13 @@
  */
 package org.apache.activenq.openwire.generator;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.activemq.openwire.annotations.OpenWireProperty;
 import org.apache.activemq.openwire.annotations.OpenWireType;
 import org.apache.activemq.openwire.generator.OpenWireTypeDescriptor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class OpenWireTypeDescriptorTest {
 

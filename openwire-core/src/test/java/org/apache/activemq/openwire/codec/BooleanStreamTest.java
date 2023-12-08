@@ -16,8 +16,10 @@
  */
 package org.apache.activemq.openwire.codec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,13 +27,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import junit.framework.AssertionFailedError;
-
-import org.apache.activemq.openwire.codec.BooleanStream;
-import org.apache.activemq.openwire.codec.OpenWireFormat;
 import org.apache.activemq.openwire.commands.CommandTypes;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 /**
  * Test for the OpenWire BooleanStream class.
@@ -123,14 +122,18 @@ public class BooleanStreamTest {
             boolean expected = valueSet.getBooleanValueFor(i, count);
             try {
                 boolean actual = bs.readBoolean();
-                assertEquals("value of object: " + i + " was: " + actual, expected, actual);
+                if(expected) {
+                    assertTrue(actual, "value of object: " + i + " was: " + actual);
+                } else {
+                    assertFalse(actual, "value of object: " + i + " was: " + actual);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 fail("Failed to parse boolean: " + i + " out of: " + count + " due to: " + e);
             }
         }
         int marker = dis.readInt();
-        assertEquals("Marker int when unmarshalling: " + count + " booleans", Integer.toHexString(endOfStreamMarker), Integer.toHexString(marker));
+        assertEquals(Integer.toHexString(endOfStreamMarker), Integer.toHexString(marker), "Marker int when unmarshalling: " + count + " booleans");
 
         // lets try read and we should get an exception
         try {
@@ -141,7 +144,7 @@ public class BooleanStreamTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         openWireformat = createOpenWireFormat();
     }

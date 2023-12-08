@@ -16,8 +16,8 @@
  */
 package org.apache.activemq.openwire.codec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
@@ -45,7 +45,7 @@ import org.apache.activemq.openwire.utils.OpenWireConnection;
 import org.apache.activemq.openwire.utils.OpenWireConsumer;
 import org.apache.activemq.openwire.utils.OpenWireProducer;
 import org.apache.activemq.openwire.utils.OpenWireSession;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MessageCompressionTest extends OpenWireInteropTestSupport {
 
@@ -61,11 +61,11 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
             + "The quick red fox jumped over the lazy brown dog. " + "The quick red fox jumped over the lazy brown dog. ";
 
     public OpenWireQueue getOpenWireQueue() {
-        return new OpenWireQueue(name.getMethodName());
+        return new OpenWireQueue(testMethodName);
     }
 
     public Queue getActiveMQQueue() {
-        return new ActiveMQQueue(name.getMethodName());
+        return new ActiveMQQueue(testMethodName);
     }
 
     @Test
@@ -78,8 +78,8 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         message = receiveAMQTextMessage();
         int unCompressedSize = message.getContent().getLength();
 
-        assertTrue("expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'",
-                   compressedSize < unCompressedSize);
+        assertTrue(compressedSize < unCompressedSize, 
+                "expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'");
     }
 
     @Test
@@ -92,8 +92,8 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         message = receiveOpenWireTextMessage();
         int unCompressedSize = message.getContent().getLength();
 
-        assertTrue("expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'",
-                   compressedSize < unCompressedSize);
+        assertTrue(compressedSize < unCompressedSize, 
+                "expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'");
     }
 
     @Test
@@ -106,8 +106,8 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         message = receiveOpenWireTextMessage();
         int unCompressedSize = message.getContent().getLength();
 
-        assertTrue("expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'",
-                   compressedSize < unCompressedSize);
+        assertTrue(compressedSize < unCompressedSize,
+                "expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'");
     }
 
     @Test
@@ -120,8 +120,8 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         message = receiveAMQTextMessage();
         int unCompressedSize = message.getContent().getLength();
 
-        assertTrue("expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'",
-                   compressedSize < unCompressedSize);
+        assertTrue(compressedSize < unCompressedSize,
+                "expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'");
     }
 
     @Test
@@ -140,8 +140,8 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         message = receiveAMQBytesMessage();
         int unCompressedSize = message.getContent().getLength();
 
-        assertTrue("expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'",
-                   compressedSize < unCompressedSize);
+        assertTrue(compressedSize < unCompressedSize,
+                "expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'");
     }
 
     @Test
@@ -158,8 +158,8 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         message = receiveOpenWireBytesMessage();
         int unCompressedSize = message.getContent().getLength();
 
-        assertTrue("expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'",
-                   compressedSize < unCompressedSize);
+        assertTrue(compressedSize < unCompressedSize,
+                "expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'");
     }
 
     @Test
@@ -176,8 +176,8 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         message = receiveOpenWireBytesMessage();
         int unCompressedSize = message.getContent().getLength();
 
-        assertTrue("expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'",
-                   compressedSize < unCompressedSize);
+        assertTrue(compressedSize < unCompressedSize,
+                "expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'");
     }
 
     @Test
@@ -194,8 +194,8 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         message = receiveOpenWireBytesMessage();
         int unCompressedSize = message.getContent().getLength();
 
-        assertTrue("expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'",
-                   compressedSize < unCompressedSize);
+        assertTrue(compressedSize < unCompressedSize,
+                "expected: compressed Size '" + compressedSize + "' < unCompressedSize '" + unCompressedSize + "'");
     }
 
     //---------- Sends and Receives Message Via ActiveMQ Objects -------------//
@@ -263,7 +263,7 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         assertTrue(awaitConnected(10, TimeUnit.SECONDS));
         OpenWireConnection connection = new OpenWireConnection();
         ConnectionInfo connectionInfo = connection.createConnectionInfo();
-        connectionInfo.setClientId(name.getMethodName());
+        connectionInfo.setClientId(testMethodName);
         assertTrue(request(connectionInfo, 10, TimeUnit.SECONDS));
         assertEquals(1, brokerService.getAdminView().getCurrentConnectionsCount());
 
@@ -302,7 +302,7 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         assertTrue(awaitConnected(10, TimeUnit.SECONDS));
         OpenWireConnection connection = new OpenWireConnection();
         ConnectionInfo connectionInfo = connection.createConnectionInfo();
-        connectionInfo.setClientId(name.getMethodName());
+        connectionInfo.setClientId(testMethodName);
         assertTrue(request(connectionInfo, 10, TimeUnit.SECONDS));
         assertEquals(1, brokerService.getAdminView().getCurrentConnectionsCount());
 
@@ -337,7 +337,7 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         assertTrue(awaitConnected(10, TimeUnit.SECONDS));
         OpenWireConnection connection = new OpenWireConnection();
         ConnectionInfo connectionInfo = connection.createConnectionInfo();
-        connectionInfo.setClientId(name.getMethodName());
+        connectionInfo.setClientId(testMethodName);
         assertTrue(request(connectionInfo, 10, TimeUnit.SECONDS));
         assertEquals(1, brokerService.getAdminView().getCurrentConnectionsCount());
 
@@ -352,12 +352,12 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         assertTrue(request(consumerInfo, 10, TimeUnit.SECONDS));
         assertEquals(1, brokerService.getAdminView().getQueueSubscribers().length);
 
-        assertTrue("Should have received a message", Wait.waitFor(new Wait.Condition() {
+        assertTrue(Wait.waitFor(new Wait.Condition() {
             @Override
             public boolean isSatisified() throws Exception {
                 return messages.size() == 1;
             }
-        }));
+        }), "Should have received a message");
 
         Message incoming = messages.poll();
         assertTrue(incoming instanceof OpenWireTextMessage);
@@ -384,7 +384,7 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         assertTrue(awaitConnected(10, TimeUnit.SECONDS));
         OpenWireConnection connection = new OpenWireConnection();
         ConnectionInfo connectionInfo = connection.createConnectionInfo();
-        connectionInfo.setClientId(name.getMethodName());
+        connectionInfo.setClientId(testMethodName);
         assertTrue(request(connectionInfo, 10, TimeUnit.SECONDS));
         assertEquals(1, brokerService.getAdminView().getCurrentConnectionsCount());
 
@@ -399,12 +399,12 @@ public class MessageCompressionTest extends OpenWireInteropTestSupport {
         assertTrue(request(consumerInfo, 10, TimeUnit.SECONDS));
         assertEquals(1, brokerService.getAdminView().getQueueSubscribers().length);
 
-        assertTrue("Should have received a message", Wait.waitFor(new Wait.Condition() {
+        assertTrue(Wait.waitFor(new Wait.Condition() {
             @Override
             public boolean isSatisified() throws Exception {
                 return messages.size() == 1;
             }
-        }));
+        }),"Should have received a message");
 
         Message incoming = messages.poll();
         assertTrue(incoming instanceof OpenWireBytesMessage);

@@ -16,12 +16,10 @@
  */
 package org.apache.activemq.openwire.codec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.activemq.openwire.commands.ConnectionInfo;
@@ -36,15 +34,15 @@ import org.apache.activemq.openwire.utils.OpenWireConnection;
 import org.apache.activemq.openwire.utils.OpenWireConsumer;
 import org.apache.activemq.openwire.utils.OpenWireProducer;
 import org.apache.activemq.openwire.utils.OpenWireSession;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RunWith(Parameterized.class)
 public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenWireInteropTests.class);
@@ -52,29 +50,23 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
     protected OpenWireConnection connectionId;
     protected boolean tightEncodingEnabled;
 
-    public OpenWireInteropTests(boolean tightEncodingEnabled) {
-        this.tightEncodingEnabled = tightEncodingEnabled;
-    }
-
-    @Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { Boolean.FALSE }, { Boolean.TRUE } });
-    }
-
     @Override
     protected boolean isTightEncodingEnabled() {
         return tightEncodingEnabled;
     }
 
     @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws Exception {
+        super.setUp(testInfo);
         connectionId = new OpenWireConnection();
     }
 
-    @Test(timeout = 60000)
-    public void testCanConnect() throws Exception {
+    @ParameterizedTest
+    @Timeout(value = 60000, unit = TimeUnit.MILLISECONDS)
+    @ValueSource(booleans = {true, false})
+    public void testCanConnect(boolean tightEncodingEnabled) throws Exception {
+        this.tightEncodingEnabled = tightEncodingEnabled;
         connect();
         assertTrue(awaitConnected(10, TimeUnit.SECONDS));
         assertEquals(getOpenWireVersion(), getRemoteWireFormatInfo().getVersion());
@@ -88,16 +80,20 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
         }
     }
 
-    @Test(timeout = 60000)
-    public void testCreateConnection() throws Exception {
+    @ParameterizedTest
+    @Timeout(value = 60000, unit = TimeUnit.MILLISECONDS)
+    @ValueSource(booleans = {true, false})
+    public void testCreateConnection(boolean tightEncodingEnabled) throws Exception {
         connect();
         assertTrue(awaitConnected(10, TimeUnit.SECONDS));
         assertTrue(request(createConnectionInfo(), 10, TimeUnit.SECONDS));
         assertEquals(1, brokerService.getAdminView().getCurrentConnectionsCount());
     }
 
-    @Test(timeout = 60000)
-    public void testCreateSession() throws Exception {
+    @ParameterizedTest
+    @Timeout(value = 60000, unit = TimeUnit.MILLISECONDS)
+    @ValueSource(booleans = {true, false})
+    public void testCreateSession(boolean tightEncodingEnabled) throws Exception {
         connect();
         assertTrue(awaitConnected(10, TimeUnit.SECONDS));
         assertTrue(request(createConnectionInfo(), 10, TimeUnit.SECONDS));
@@ -106,8 +102,10 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
         assertTrue(request(sessionId.createSessionInfo(), 10, TimeUnit.SECONDS));
     }
 
-    @Test(timeout = 60000)
-    public void testCreateProducer() throws Exception {
+    @ParameterizedTest
+    @Timeout(value = 60000, unit = TimeUnit.MILLISECONDS)
+    @ValueSource(booleans = {true, false})
+    public void testCreateProducer(boolean tightEncodingEnabled) throws Exception {
         connect();
         assertTrue(awaitConnected(10, TimeUnit.SECONDS));
         assertTrue(request(createConnectionInfo(), 10, TimeUnit.SECONDS));
@@ -117,7 +115,7 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
         assertTrue(request(sessionId.createSessionInfo(), 10, TimeUnit.SECONDS));
         OpenWireProducer producerId = sessionId.createOpenWireProducer();
 
-        ProducerInfo info = producerId.createProducerInfo(new OpenWireTopic(name.getMethodName() + "-Topic"));
+        ProducerInfo info = producerId.createProducerInfo(new OpenWireTopic(testMethodName + "-Topic"));
         info.setDispatchAsync(false);
         assertTrue(request(info, 10, TimeUnit.SECONDS));
         assertEquals(1, brokerService.getAdminView().getTopicProducers().length);
@@ -126,8 +124,10 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
         assertEquals(0, brokerService.getAdminView().getTopicProducers().length);
     }
 
-    @Test(timeout = 60000)
-    public void testCreateConsumer() throws Exception {
+    @ParameterizedTest
+    @Timeout(value = 60000, unit = TimeUnit.MILLISECONDS)
+    @ValueSource(booleans = {true, false})
+    public void testCreateConsumer(boolean tightEncodingEnabled) throws Exception {
         connect();
         assertTrue(awaitConnected(10, TimeUnit.SECONDS));
         assertTrue(request(createConnectionInfo(), 10, TimeUnit.SECONDS));
@@ -137,7 +137,7 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
         assertTrue(request(sessionId.createSessionInfo(), 10, TimeUnit.SECONDS));
         OpenWireConsumer consumerId = sessionId.createOpenWireConsumer();
 
-        ConsumerInfo info = consumerId.createConsumerInfo(new OpenWireTopic(name.getMethodName() + "-Topic"));
+        ConsumerInfo info = consumerId.createConsumerInfo(new OpenWireTopic(testMethodName + "-Topic"));
         info.setDispatchAsync(false);
         assertTrue(request(info, 10, TimeUnit.SECONDS));
         assertEquals(1, brokerService.getAdminView().getTopicSubscribers().length);
@@ -146,8 +146,10 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
         assertEquals(0, brokerService.getAdminView().getTopicSubscribers().length);
     }
 
-    @Test(timeout = 60000)
-    public void testSendMessageToQueue() throws Exception {
+    @ParameterizedTest
+    @Timeout(value = 60000, unit = TimeUnit.MILLISECONDS)
+    @ValueSource(booleans = {true, false})
+    public void testSendMessageToQueue(boolean tightEncodingEnabled) throws Exception {
         connect();
         assertTrue(awaitConnected(10, TimeUnit.SECONDS));
         assertTrue(request(createConnectionInfo(), 10, TimeUnit.SECONDS));
@@ -157,7 +159,7 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
         assertTrue(request(sessionId.createSessionInfo(), 10, TimeUnit.SECONDS));
         OpenWireProducer producerId = sessionId.createOpenWireProducer();
 
-        OpenWireQueue queue = new OpenWireQueue(name.getMethodName() + "-Queue");
+        OpenWireQueue queue = new OpenWireQueue(testMethodName + "-Queue");
 
         ProducerInfo info = producerId.createProducerInfo(queue);
         info.setDispatchAsync(false);
@@ -179,8 +181,10 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
         assertEquals(0, brokerService.getAdminView().getQueueProducers().length);
     }
 
-    @Test(timeout = 60000)
-    public void testConsumeMessageFromQueue() throws Exception {
+    @ParameterizedTest
+    @Timeout(value = 60000, unit = TimeUnit.MILLISECONDS)
+    @ValueSource(booleans = {true, false})
+    public void testConsumeMessageFromQueue(boolean tightEncodingEnabled) throws Exception {
         connect();
         assertTrue(awaitConnected(10, TimeUnit.SECONDS));
         assertTrue(request(createConnectionInfo(), 10, TimeUnit.SECONDS));
@@ -190,7 +194,7 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
         assertTrue(request(sessionId.createSessionInfo(), 10, TimeUnit.SECONDS));
         OpenWireProducer producerId = sessionId.createOpenWireProducer();
 
-        OpenWireQueue queue = new OpenWireQueue(name.getMethodName() + "-Queue");
+        OpenWireQueue queue = new OpenWireQueue(testMethodName + "-Queue");
 
         ProducerInfo producerInfo = producerId.createProducerInfo(queue);
         producerInfo.setDispatchAsync(false);
@@ -215,12 +219,12 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
         assertTrue(request(consumerInfo, 10, TimeUnit.SECONDS));
         assertEquals(1, brokerService.getAdminView().getQueueSubscribers().length);
 
-        assertTrue("Should have received a message", Wait.waitFor(new Wait.Condition() {
+        assertTrue(Wait.waitFor(new Wait.Condition() {
             @Override
             public boolean isSatisified() throws Exception {
                 return messages.size() == 1;
             }
-        }));
+        }), "Should have received a message");
 
         Message incoming = messages.poll();
         assertTrue(incoming instanceof OpenWireTextMessage);
@@ -235,7 +239,7 @@ public abstract class OpenWireInteropTests extends OpenWireInteropTestSupport {
         ConnectionInfo info = new ConnectionInfo(connectionId.getConnectionId());
         info.setManageable(false);
         info.setFaultTolerant(false);
-        info.setClientId(name.getMethodName());
+        info.setClientId(testMethodName);
         return info;
     }
 }

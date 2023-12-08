@@ -33,8 +33,6 @@ import javax.management.ObjectName;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.TransportConnector;
 import org.apache.activemq.broker.jmx.QueueViewMBean;
-import org.apache.activemq.openwire.codec.OpenWireFormat;
-import org.apache.activemq.openwire.codec.OpenWireFormatFactory;
 import org.apache.activemq.openwire.commands.BrokerInfo;
 import org.apache.activemq.openwire.commands.Command;
 import org.apache.activemq.openwire.commands.KeepAliveInfo;
@@ -45,10 +43,9 @@ import org.apache.activemq.openwire.commands.ShutdownInfo;
 import org.apache.activemq.openwire.commands.WireFormatInfo;
 import org.apache.activemq.openwire.util.TcpTransport;
 import org.apache.activemq.openwire.util.TransportListener;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +57,7 @@ public abstract class OpenWireInteropTestSupport implements TransportListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenWireInteropTestSupport.class);
 
-    @Rule public TestName name = new TestName();
+    protected String testMethodName;
 
     protected BrokerService brokerService;
 
@@ -83,8 +80,8 @@ public abstract class OpenWireInteropTestSupport implements TransportListener {
     protected Command latest;
     protected final Queue<Message> messages = new LinkedList<Message>();
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp(TestInfo testInfo) throws Exception {
         brokerService = createBroker();
         brokerService.start();
         brokerService.waitUntilStarted();
@@ -95,9 +92,11 @@ public abstract class OpenWireInteropTestSupport implements TransportListener {
         factory.setTightEncodingEnabled(isTightEncodingEnabled());
 
         wireFormat = factory.createWireFormat();
+
+        testMethodName = testInfo.getTestMethod().get().getName();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         disconnect();
 
@@ -134,7 +133,7 @@ public abstract class OpenWireInteropTestSupport implements TransportListener {
         command.setCommandId(requestIdGenerator.getAndIncrement());
         command.setResponseRequired(true);
         CountDownLatch complete = new CountDownLatch(1);
-        requestMap.put(new Integer(command.getCommandId()), complete);
+        requestMap.put(Integer.valueOf(command.getCommandId()), complete);
         transport.oneway(command);
         return complete.await(timeout, units);
     }

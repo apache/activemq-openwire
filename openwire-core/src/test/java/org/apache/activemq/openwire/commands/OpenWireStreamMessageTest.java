@@ -16,10 +16,10 @@
  */
 package org.apache.activemq.openwire.commands;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,14 +27,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.activemq.openwire.buffer.Buffer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class OpenWireStreamMessageTest {
 
     private final List<Object> elements = new ArrayList<Object>();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         elements.add(Boolean.TRUE);

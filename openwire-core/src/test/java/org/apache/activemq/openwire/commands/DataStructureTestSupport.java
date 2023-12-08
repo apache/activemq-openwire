@@ -16,31 +16,30 @@
  */
 package org.apache.activemq.openwire.commands;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import junit.framework.AssertionFailedError;
-
 import org.apache.activemq.openwire.buffer.Buffer;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.opentest4j.AssertionFailedError;
 
 public abstract class DataStructureTestSupport {
 
-    protected boolean cacheEnabled;
     protected OpenWireFormat wireFormat;
 
     public void assertBeanMarshalls(Object original) throws IOException {
         Object o = marshalAndUnmarshall(original, wireFormat);
         assertNotNull(o);
-        assertEquals(original, o);
+        assertEqualsOpenWire(original, o);
     }
 
-    public static void assertEquals(Object expect, Object was) {
+    public static void assertEqualsOpenWire(Object expect, Object was) {
         if (expect == null ^ was == null) {
             throw new AssertionFailedError("Not equals, expected: " + expect + ", was: " + was);
         }
@@ -88,12 +87,12 @@ public abstract class DataStructureTestSupport {
                     throw new AssertionFailedError("Not equals, array lengths don't match. expected: " + expectArray.length + ", was: " + wasArray.length);
                 }
                 for (int i = 0; i < wasArray.length; i++) {
-                    assertEquals(expectArray[i], wasArray[i]);
+                    assertEqualsOpenWire(expectArray[i], wasArray[i]);
                 }
 
             }
         } else if (expect instanceof Command) {
-            assertEquals(expect.getClass(), was.getClass());
+            assertEqualsOpenWire(expect.getClass(), was.getClass());
             Method[] methods = expect.getClass().getMethods();
             for (int i = 0; i < methods.length; i++) {
                 Method method = methods[i];
@@ -112,7 +111,7 @@ public abstract class DataStructureTestSupport {
                     }
 
                     try {
-                        assertEquals(method.invoke(expect, (Object) null), method.invoke(was, (Object) null));
+                        assertEqualsOpenWire(method.invoke(expect, (Object) null), method.invoke(was, (Object) null));
                     } catch (IllegalArgumentException e) {
                     } catch (IllegalAccessException e) {
                     } catch (InvocationTargetException e) {
@@ -120,19 +119,19 @@ public abstract class DataStructureTestSupport {
                 }
             }
         } else {
-            org.junit.Assert.assertEquals(expect, was);
+            assertEquals(expect, was);
         }
     }
 
-    @Before
-    public void setUp() throws Exception {
-        wireFormat = createWireFormat();
+    @AfterEach
+    public void afterEach() {
+        wireFormat = null;
     }
 
-    protected OpenWireFormat createWireFormat() {
+    protected void createWireFormat(boolean cacheEnabled) {
         OpenWireFormat answer = new OpenWireFormat(10);
         answer.setCacheEnabled(cacheEnabled);
-        return answer;
+        wireFormat = answer;
     }
 
     protected Object marshalAndUnmarshall(Object original, OpenWireFormat wireFormat) throws IOException {
