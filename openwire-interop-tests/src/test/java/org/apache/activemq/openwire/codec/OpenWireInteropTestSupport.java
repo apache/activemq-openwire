@@ -134,9 +134,15 @@ public abstract class OpenWireInteropTestSupport implements TransportListener {
         command.setCommandId(requestIdGenerator.getAndIncrement());
         command.setResponseRequired(true);
         CountDownLatch complete = new CountDownLatch(1);
-        requestMap.put(new Integer(command.getCommandId()), complete);
+        requestMap.put(command.getCommandId(), complete);
         transport.oneway(command);
         return complete.await(timeout, units);
+    }
+
+    protected void requestNoResponse(Command command) throws Exception {
+        command.setCommandId(requestIdGenerator.getAndIncrement());
+        command.setResponseRequired(false);
+        transport.oneway(command);
     }
 
     protected boolean awaitConnected(long time, TimeUnit unit) throws InterruptedException {

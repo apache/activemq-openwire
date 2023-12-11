@@ -54,6 +54,11 @@ public class CommandVisitorAdapter implements CommandVisitor {
     }
 
     @Override
+    public Response processBrokerSubscriptionInfo(BrokerSubscriptionInfo info) throws Exception {
+        return null;
+    }
+
+    @Override
     public Response processCommitTransactionOnePhase(TransactionInfo info) throws Exception {
         return null;
     }
