@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,18 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.activemq.openwire.codec.universal;
+package org.apache.activemq.openwire.codec.v12;
 
 import org.apache.activemq.openwire.codec.DataStreamMarshaller;
 import org.apache.activemq.openwire.codec.OpenWireFormat;
 
-/**
- * Marshalling Factory for the Universal OpenWire Codec package.
- *
- * NOTE!: This file is auto generated - do not modify!
- *
- */
-public class MarshallerFactory{
+public class MarshallerFactory {
 
     /**
      * Creates a Map of command type -> Marshallers
@@ -33,6 +27,17 @@ public class MarshallerFactory{
     static final private DataStreamMarshaller marshaller[] = new DataStreamMarshaller[256];
     static {
 
+        add(new OpenWireBlobMessageMarshaller());
+        add(new OpenWireBytesMessageMarshaller());
+        add(new OpenWireMapMessageMarshaller());
+        add(new OpenWireMessageMarshaller());
+        add(new OpenWireObjectMessageMarshaller());
+        add(new OpenWireQueueMarshaller());
+        add(new OpenWireStreamMessageMarshaller());
+        add(new OpenWireTempQueueMarshaller());
+        add(new OpenWireTempTopicMarshaller());
+        add(new OpenWireTextMessageMarshaller());
+        add(new OpenWireTopicMarshaller());
         add(new BrokerIdMarshaller());
         add(new BrokerInfoMarshaller());
         add(new BrokerSubscriptionInfoMarshaller());
@@ -64,17 +69,6 @@ public class MarshallerFactory{
         add(new MessageIdMarshaller());
         add(new MessagePullMarshaller());
         add(new NetworkBridgeFilterMarshaller());
-        add(new OpenWireBlobMessageMarshaller());
-        add(new OpenWireBytesMessageMarshaller());
-        add(new OpenWireMapMessageMarshaller());
-        add(new OpenWireMessageMarshaller());
-        add(new OpenWireObjectMessageMarshaller());
-        add(new OpenWireQueueMarshaller());
-        add(new OpenWireStreamMessageMarshaller());
-        add(new OpenWireTempQueueMarshaller());
-        add(new OpenWireTempTopicMarshaller());
-        add(new OpenWireTextMessageMarshaller());
-        add(new OpenWireTopicMarshaller());
         add(new PartialCommandMarshaller());
         add(new ProducerAckMarshaller());
         add(new ProducerIdMarshaller());

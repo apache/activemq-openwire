@@ -66,6 +66,8 @@ public interface CommandVisitor {
 
     Response processBrokerInfo(BrokerInfo info) throws Exception;
 
+    Response processBrokerSubscriptionInfo(BrokerSubscriptionInfo info) throws Exception;
+
     Response processRecoverTransactions(TransactionInfo info) throws Exception;
 
     Response processForgetTransaction(TransactionInfo info) throws Exception;
