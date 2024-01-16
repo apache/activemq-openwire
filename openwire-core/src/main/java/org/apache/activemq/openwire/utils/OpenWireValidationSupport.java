@@ -18,6 +18,9 @@ package org.apache.activemq.openwire.utils;
 
 public class OpenWireValidationSupport {
 
+    private static final String jmsPackageToReplace = "javax.jms";
+    private static final String jmsPackageToUse = "jakarta.jms";
+
     /**
      * Verify that the provided class extends {@link Throwable} and throw an
      * {@link IllegalArgumentException} if it does not.
@@ -28,5 +31,19 @@ public class OpenWireValidationSupport {
         if (!Throwable.class.isAssignableFrom(clazz)) {
             throw new IllegalArgumentException("Class " + clazz + " is not assignable to Throwable");
         }
+    }
+
+    /**
+     * This method can be used to convert from javax -> jakarta or
+     * vice versa depending on the version used by the client
+     *
+     * @param className
+     * @return
+     */
+    public static String convertJmsPackage(String className) {
+        if (className != null && className.startsWith(jmsPackageToReplace)) {
+            return className.replace(jmsPackageToReplace, jmsPackageToUse);
+        }
+        return className;
     }
 }

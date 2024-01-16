@@ -16,6 +16,8 @@
  */
 package org.apache.activemq.openwire.codec;
 
+import static org.apache.activemq.openwire.utils.OpenWireValidationSupport.convertJmsPackage;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -191,7 +193,7 @@ public abstract class BaseDataStreamMarshaller implements DataStreamMarshaller {
                     StackTraceElement ss[] = new StackTraceElement[dataIn.readShort()];
                     for (int i = 0; i < ss.length; i++) {
                         try {
-                            ss[i] = STACK_TRACE_ELEMENT_CONSTRUCTOR.newInstance(new Object[] { tightUnmarshalString(dataIn, bs),
+                            ss[i] = STACK_TRACE_ELEMENT_CONSTRUCTOR.newInstance(new Object[] { convertJmsPackage(tightUnmarshalString(dataIn, bs)),
                                 tightUnmarshalString(dataIn, bs), tightUnmarshalString(dataIn, bs), Integer.valueOf(dataIn.readInt()) });
                         } catch (IOException e) {
                             throw e;
@@ -219,6 +221,7 @@ public abstract class BaseDataStreamMarshaller implements DataStreamMarshaller {
 
     private Throwable createThrowable(String className, String message) {
         try {
+            className = convertJmsPackage(className);
             Class<?> clazz = Class.forName(className, false, BaseDataStreamMarshaller.class.getClassLoader());
             OpenWireValidationSupport.validateIsThrowable(clazz);
             Constructor<?> constructor = clazz.getConstructor(String.class);
@@ -502,7 +505,7 @@ public abstract class BaseDataStreamMarshaller implements DataStreamMarshaller {
                     StackTraceElement ss[] = new StackTraceElement[dataIn.readShort()];
                     for (int i = 0; i < ss.length; i++) {
                         try {
-                            ss[i] = STACK_TRACE_ELEMENT_CONSTRUCTOR.newInstance(new Object[] { looseUnmarshalString(dataIn),
+                            ss[i] = STACK_TRACE_ELEMENT_CONSTRUCTOR.newInstance(new Object[] { convertJmsPackage(looseUnmarshalString(dataIn)),
                                 looseUnmarshalString(dataIn), looseUnmarshalString(dataIn), Integer.valueOf(dataIn.readInt()) });
                         } catch (IOException e) {
                             throw e;
