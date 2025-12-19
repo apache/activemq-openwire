@@ -41,7 +41,7 @@
     <ant-version>1.10.14</ant-version>
     <junit-version>4.13.1</junit-version>
     <slf4j-version>2.0.9</slf4j-version>
-    <log4j-version>2.22.0</log4j-version>
+    <log4j-version>2.25.3</log4j-version>
     <activemq-version>6.0.1</activemq-version>
     <jetty-version>11.0.18</jetty-version>
     <mockito-version>5.4.0</mockito-version>
